@@ -9,6 +9,6 @@ import poker.Card;
  * Time: 1:01:31 AM
  * To change this template use File | Settings | File Templates.
  */
-public class Board {
+public class BoardCards {
     public Card[] cards = new Card[5];
 }

@@ -2,8 +2,6 @@ package poker;
 
 import players.Player;
 
-import java.util.List;
-
 /**
  * Created by IntelliJ IDEA.
  * User: Sina

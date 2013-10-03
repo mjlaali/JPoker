@@ -50,7 +50,8 @@ public class PreflopCards {
         if (mindSuit) {
             return card1.equals(pc.card1) && card2.equals(pc.card2) || card1.equals(pc.card2) && card2.equals(pc.card1);
         } else {
-            return card1.rank() == pc.card1.rank() && card2 == pc.card2 || card1.rank() == pc.card2.rank() && card2.rank() == pc.card1.rank();
+            return card1.rank() == pc.card1.rank() && card2 == pc.card2 || 
+            		card1.rank() == pc.card2.rank() && card2.rank() == pc.card1.rank();
         }
     }
 

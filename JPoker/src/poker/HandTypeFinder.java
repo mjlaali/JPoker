@@ -14,11 +14,11 @@ import java.util.*;
 public class HandTypeFinder {
     private Card[] fiveCardsByValue = new Card[5];
     private PreflopCards preflopCards;
-    private Board board;
+    private BoardCards board;
     private List<Card> sortedSevenCards;
     private Map<Card.Suit, List<Card>> cardsForEachColor;
 
-    public HandTypeFinder(PreflopCards preflopCards, Board board) {
+    public HandTypeFinder(PreflopCards preflopCards, BoardCards board) {
         this.preflopCards = preflopCards;
         this.board = board;
         sortedSevenCards = sortByNumber(preflopCards, board);
@@ -236,7 +236,7 @@ public class HandTypeFinder {
         return cardsForEachColor;
     }
 
-    private List<Card> sortByNumber(PreflopCards preflopCards, Board board) {
+    private List<Card> sortByNumber(PreflopCards preflopCards, BoardCards board) {
         List<Card> sevenCards = new ArrayList<Card>();
         sevenCards.add(preflopCards.getCard1());
         sevenCards.add(preflopCards.getCard2());

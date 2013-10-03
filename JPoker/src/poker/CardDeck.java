@@ -19,8 +19,9 @@ public class CardDeck {
     public CardDeck() {
         cards = new LinkedList<Card>();
         List<Card> allCards = Card.newDeck();
+        Random random = new Random();
         for (int i = 52; i > 0; i--) {
-            int rand = new Random().nextInt(i);
+			int rand = random.nextInt(i);
             cards.add(allCards.remove(rand));
         }
     }

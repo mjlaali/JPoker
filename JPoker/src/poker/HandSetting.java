@@ -1,9 +1,15 @@
 package poker;
 
-import exceptions.OutOfCardsException;
-import players.Player;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.TreeMap;
 
-import java.util.*;
+import players.Player;
+import exceptions.OutOfCardsException;
 
 /**
  * Created by IntelliJ IDEA.
@@ -13,12 +19,17 @@ import java.util.*;
  * To change this template use File | Settings | File Templates.
  */
 public class HandSetting {
+	//The setting of game and players
     private GameSetting gameSetting;
+    //A shuffle cards
     private CardDeck cardDeck = new CardDeck();
+    //an iterator over player which show a turn
     private TurnIterator turnIterator;
+    
     private Map<Player, PreflopCards> playerPocketCards;
     private Map<Player, Double> playerBetInFronts;
-    private Board board;
+    //Shared card in the board
+    private BoardCards boardCards;
     private double stack = 0;
 
     public HandSetting(GameSetting gameSetting, int smallBlindIndex) {
@@ -35,8 +46,8 @@ public class HandSetting {
         return cardDeck;
     }
 
-    public Board getBoard() {
-        return board;
+    public BoardCards getBoard() {
+        return boardCards;
     }
 
     public Player getCurrentPlayer() {
@@ -63,18 +74,18 @@ public class HandSetting {
     }
 
     public void dealFlop() throws OutOfCardsException {
-        board = new Board();
-        board.cards[0] = cardDeck.nextCard();
-        board.cards[1] = cardDeck.nextCard();
-        board.cards[2] = cardDeck.nextCard();
+        boardCards = new BoardCards();
+        boardCards.cards[0] = cardDeck.nextCard();
+        boardCards.cards[1] = cardDeck.nextCard();
+        boardCards.cards[2] = cardDeck.nextCard();
     }
 
     public void dealTurn() throws OutOfCardsException {
-        board.cards[3] = cardDeck.nextCard();
+        boardCards.cards[3] = cardDeck.nextCard();
     }
 
     public void dealRiver() throws OutOfCardsException {
-        board.cards[4] = cardDeck.nextCard();
+        boardCards.cards[4] = cardDeck.nextCard();
     }
 
     public int getRemainingCount() {
@@ -104,36 +115,38 @@ public class HandSetting {
             stack += betInFront;
         }
         clearPlayerBetInFronts();
+        if (stack == 0)
+        	stack = 1;
     }
 
     public ShowDown showDown() {
-        // todo: handle all in requiring stack separation and over stack bet error
-        Map<Player, HandType> playerHandTypes = new HashMap<Player, HandType>();
-        List<Player> playersOrderedByHand = new ArrayList<Player>();
+        //TODO: handle all in requiring stack separation and over stack bet error
+        Map<HandType, List<Player>> playerHandTypes = new TreeMap<HandType, List<Player>>();
         for (Player player : playerPocketCards.keySet()) {
-            HandTypeFinder handTypeFinder = new HandTypeFinder(playerPocketCards.get(player), board);
+            HandTypeFinder handTypeFinder = new HandTypeFinder(playerPocketCards.get(player), boardCards);
             HandType handType = handTypeFinder.findHandType();
-            playerHandTypes.put(player, handType);
-            int index = 0;
-            boolean correctIndexFound = false;
-            while (index < playersOrderedByHand.size() && !correctIndexFound) {
-                HandType currentHandType = playerHandTypes.get(playersOrderedByHand.get(index));
-                if (handType.compareTo(currentHandType) > 0) {
-                    correctIndexFound = true;
-                } else {
-                    index++;
-                }
+            List<Player> playersWithHand = playerHandTypes.get(handType);
+            if (playersWithHand == null){
+            	playersWithHand = new LinkedList<Player>();
+            	playerHandTypes.put(handType, playersWithHand);
             }
-            playersOrderedByHand.add(index, player);
+            playersWithHand.add(player);
         }
-        List<ShowDownElement> showDownElements = new ArrayList<ShowDownElement>();
-        Iterator<Player> iterator = playersOrderedByHand.iterator();
-        Player winningPlayer = iterator.next();
-        showDownElements.add(new ShowDownElement(winningPlayer, playerHandTypes.get(winningPlayer), stack));
-        while (iterator.hasNext()) {
-            Player player = iterator.next();
-            showDownElements.add(new ShowDownElement(player, playerHandTypes.get(player), 0));
+
+        List<ShowDownElement> showDownElements = new LinkedList<ShowDownElement>();
+        int index = 1;
+        for (Entry<HandType, List<Player>> aHandWithPlayers: playerHandTypes.entrySet()){
+        	double playerWinningStack = 0;
+        	if (index == playerHandTypes.size()) //these player have best hands of this game
+        		playerWinningStack = stack / aHandWithPlayers.getValue().size();
+        	for (Player player: aHandWithPlayers.getValue()){
+        		showDownElements.add(new ShowDownElement(player, aHandWithPlayers.getKey(), playerWinningStack));
+        	}
+        	++index;
         }
+        
+        Collections.reverse(showDownElements);
+
         return new ShowDown(showDownElements);
     }
 }

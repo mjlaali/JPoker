@@ -31,6 +31,7 @@ public class Dealer {
         boolean tableOpen = true;
         int handCount = 0;
         int smallBlindIndex = 0;
+        
         while (tableOpen) {
             HandSetting handSetting = new HandSetting(gameSetting, smallBlindIndex);
             notifier.notifyNewHandStarted();
@@ -66,7 +67,7 @@ public class Dealer {
     }
 
     private void doBettingRound(HandSetting handSetting) throws EarlyFinishedHandException {
-        // todo: handle all in requiring stack separation and over stack bet error
+        // TODO: handle all in requiring stack separation and over stack bet error
         double lastBet = 0;
         Player raiser = null;
         Player currentPlayer = handSetting.getCurrentPlayer();
