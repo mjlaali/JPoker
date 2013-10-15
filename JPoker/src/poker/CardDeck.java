@@ -13,6 +13,7 @@ import exceptions.OutOfCardsException;
  * Time: 8:44:26 PM
  * To change this template use File | Settings | File Templates.
  */
+@Deprecated
 public class CardDeck {
     private LinkedList<Card> cards;
 

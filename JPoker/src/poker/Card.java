@@ -1,7 +1,8 @@
 package poker;
 
 import java.util.ArrayList;
-import java.util.List;
+
+import poker.shuffler.Shufeller;
 
 /**
  * Created by IntelliJ IDEA.
@@ -77,7 +78,7 @@ public class Card {
         return false;
     }
 
-    private static final List<Card> protoDeck = new ArrayList<Card>();
+    private static final ArrayList<Card> protoDeck = new ArrayList<Card>();
 
     // Initialize prototype deck
     static {
@@ -89,6 +90,11 @@ public class Card {
     public static ArrayList<Card> newDeck() {
         return new ArrayList<Card>(protoDeck); // Return copy of prototype deck
     }
+    
+    public static ArrayList<Card> newDeck(Shufeller shufeller) {
+        return shufeller.shuffle(protoDeck); // Return copy of prototype deck
+    }
+    
 
     public static Card build(String cardStr) {
         if (cardStr.length() != 2) {
@@ -103,6 +109,7 @@ public class Card {
                 case 'K': case 'k': number = 13; break;
                 case 'Q': case 'q': number = 12; break;
                 case 'J': case 'j': number = 11; break;
+                case 'T': case 't': number = 10; break;
                 default:
                     throw new RuntimeException("Invalid card name format: " + cardStr);
             }

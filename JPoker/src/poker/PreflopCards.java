@@ -45,6 +45,20 @@ public class PreflopCards {
     public String toString() {
         return card1 + ", " + card2;
     }
+    
+    public String getCategory(){
+    	String category = "";
+    	if (card1.rank().value > card2.rank().value)
+    		category = "" + card1.rank() + card2.rank();
+    	else
+    		category = "" + card2.rank() + card1.rank();
+    	
+    	if (card1.suit() == card2.suit())
+    		category += "s";
+    	else if (card1.rank().value != card2.rank().value)
+    		category += "o";
+    	return category;
+    }
 
     public boolean equals(PreflopCards pc, boolean mindSuit) {
         if (mindSuit) {
