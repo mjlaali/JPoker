@@ -20,29 +20,6 @@ public class Card {
         Rank(int value) {
             this.value = value;
         }
-        
-        @Override
-        public String toString() {
-        	if (value < 10)
-        		return "" + value;
-        	else {
-        		switch (value) {
-        		case 10:
-        			return "T";
-				case 11:
-					return "J";
-				case 12:
-					return "Q";
-				case 13:
-					return "K";
-				case 14:
-					return "A";
-				default:
-					return null;
-				}
-        	}
-        		
-        }
     }
 
     public enum Suit {

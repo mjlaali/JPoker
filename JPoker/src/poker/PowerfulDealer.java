@@ -29,7 +29,7 @@ public class PowerfulDealer {
 	}
 
 	private void preflop() {
-		playersAvailable = new TreeSet<>();
+		playersAvailable = new TreeSet<IPlayer>();
 		for (Entry<IPlayer, Double> playerStatck: playersStack.entrySet()){
 			if (playerStatck.getValue() > 0)
 				playersAvailable.add(playerStatck.getKey());

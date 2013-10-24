@@ -93,7 +93,7 @@ class StraightValidator implements Validator{
 
 
 public class RawCountTest {
-	private List<Integer> remaindedCard = new LinkedList<>();
+	private List<Integer> remaindedCard = new LinkedList();
 	private int cardnumber;
 	private Random random;
 	

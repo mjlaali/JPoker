@@ -1,20 +1,17 @@
 package processor.preflop;
 
-import java.util.LinkedList;
-import java.util.List;
-
-import junit.framework.Assert;
-
-import org.junit.Test;
-
 import exceptions.OutOfCardsException;
-
+import junit.framework.Assert;
+import org.junit.Test;
 import players.CheckingPlayer;
 import players.PlayerObserver;
 import poker.Dealer;
 import poker.GameSetting;
 import poker.Notifiable;
 import processors.preflop.PreflopAnalyzer;
+
+import java.util.LinkedList;
+import java.util.List;
 
 public class HandRanking {
 	

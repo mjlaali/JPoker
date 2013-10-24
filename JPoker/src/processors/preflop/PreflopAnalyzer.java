@@ -46,21 +46,21 @@ public class PreflopAnalyzer extends DefaultNotifiable{
 	public List<String> report(PrintStream reportOutput){
 		System.out.println("Total game = " + total);
 
-		Map<Double, List<PreflopCards>> rankedHands = new TreeMap<>();
+		Map<Double, List<PreflopCards>> rankedHands = new TreeMap<Double, List<PreflopCards>>();
 		for (Entry<PreflopCards, Integer> aHandWinCount: winCount.entrySet()){
 			double winingProb = aHandWinCount.getValue() * 1.0 / totalCount.get(aHandWinCount.getKey());
 			List<PreflopCards> list = rankedHands.get(winingProb);
 			if (list == null){
-				list = new LinkedList<>();
+				list = new LinkedList<PreflopCards>();
 				rankedHands.put(winingProb, list);
 			}
 			list.add(aHandWinCount.getKey());
 		}
 
-		List<Double> keys = new LinkedList<>(rankedHands.keySet());
+		List<Double> keys = new LinkedList<Double>(rankedHands.keySet());
 		Collections.reverse(keys);
 		
-		List<String> rankedHand = new LinkedList<>();
+		List<String> rankedHand = new LinkedList<String>();
 		int rank = 1;
 		for (Double key: keys){
 			if (reportOutput != null){
