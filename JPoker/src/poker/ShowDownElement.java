@@ -1,10 +1,9 @@
 package poker;
 
-import poker.HandType;
 import players.Player;
 
 /**
- * Created by IntelliJ IDEA.
+ * Created with IntelliJ IDEA.
  * User: Sina
  * Date: Mar 2, 2012
  * Time: 1:03:48 PM
