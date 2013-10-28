@@ -1,24 +1,28 @@
 package ui;
 
-import javax.imageio.ImageIO;
+import poker.Card;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.io.File;
-import java.io.IOException;
+import java.util.Random;
 
 public class CardPanel extends JPanel implements MouseListener {
     private Image frontImage;
-    private Image backImage;
     private boolean frontActive;
+    private static int rand = new Random().nextInt(6) + 1;
+    private static Image backImage = Toolkit.getDefaultToolkit().getImage("images/Back of Card " + rand + ".jpg");
 
-    public CardPanel(String frontImagePath, String backImagePath) {
-        frontImage = Toolkit.getDefaultToolkit().getImage(frontImagePath);
-        backImage = Toolkit.getDefaultToolkit().getImage(backImagePath);
+    public CardPanel(Card card) {
+        frontImage = Toolkit.getDefaultToolkit().getImage(constructImagePath(card));
         frontActive = false;
         setBackground(new Color(0, 0, 0, 0));
         this.addMouseListener(this);
+    }
+
+    private static String constructImagePath(Card card) {
+        return "images/" + card + ".jpg";
     }
 
     private Image activeImage() {
@@ -26,17 +30,17 @@ public class CardPanel extends JPanel implements MouseListener {
     }
 
     public void paint(Graphics g) {
-        g.drawImage(activeImage(),  0, 0, getWidth(), getHeight(), this);
+        g.drawImage(activeImage(), 0, 0, getWidth(), getHeight(), this);
     }
 
     public void update(Graphics g) {
-        g.drawImage(activeImage(),  0, 0, getWidth(), getHeight(), this);
+        g.drawImage(activeImage(), 0, 0, getWidth(), getHeight(), this);
     }
 
     public void mouseClicked(MouseEvent e) {
         setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
         frontActive = !frontActive;
-        repaint();
+        getParent().repaint();
     }
 
     public void mousePressed(MouseEvent e) {
@@ -47,11 +51,9 @@ public class CardPanel extends JPanel implements MouseListener {
 
     public void mouseEntered(MouseEvent e) {
         setCursor(new Cursor(Cursor.HAND_CURSOR));
-        repaint();
     }
 
     public void mouseExited(MouseEvent e) {
         setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-        repaint();
     }
 }

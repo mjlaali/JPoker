@@ -29,6 +29,15 @@ public class Card {
     private final Rank rank;
     private final Suit suit;
 
+    private static final List<Card> protoDeck = new ArrayList<Card>();
+
+    // Initialize prototype deck
+    static {
+        for (Suit suit : Suit.values())
+            for (Rank rank : Rank.values())
+                protoDeck.add(new Card(rank, suit));
+    }
+
     public Card(Rank rank, Suit suit) {
         this.rank = rank;
         this.suit = suit;
@@ -52,15 +61,6 @@ public class Card {
             return rank == c.rank && suit == c.suit;
         }
         return false;
-    }
-
-    private static final List<Card> protoDeck = new ArrayList<Card>();
-
-    // Initialize prototype deck
-    static {
-        for (Suit suit : Suit.values())
-            for (Rank rank : Rank.values())
-                protoDeck.add(new Card(rank, suit));
     }
 
     public static ArrayList<Card> newDeck() {

@@ -53,6 +53,13 @@ public class GraphicsUserInterface extends JFrame implements UserInterface, Play
             playerPanels.put(player, playerPanel);
             boardPanel.add(playerPanel);
             playerPanel.setBounds(UICoords.playerX1s[i], UICoords.playerY1s[i], PlayerPanel.panelWidth, PlayerPanel.panelHeight);
+
+            InfoPanel infoPanel = new InfoPanel(player.getId(), gameSetting.getStackSize(player));
+            boardPanel.add(infoPanel);
+            int y = UICoords.playerY1s[i];
+            y = (y > getHeight() / 2) ? (y + 80) : y - 35;
+            infoPanel.setBounds(UICoords.playerX1s[i] + 5, y, InfoPanel.panelWidth, InfoPanel.panelHeight);
+
             i++;
         }
         repaint();
@@ -98,7 +105,6 @@ public class GraphicsUserInterface extends JFrame implements UserInterface, Play
     }
 
     public void playerFolded(Player foldingPlayer) {
-
     }
 
     public void playerBet(Player bettingPlayer, double bet) {
