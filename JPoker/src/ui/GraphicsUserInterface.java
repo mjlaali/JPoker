@@ -8,8 +8,6 @@ import poker.ShowDown;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
