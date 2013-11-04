@@ -22,32 +22,19 @@ public class PlayerPanel extends JPanel {
 
     private CardPanel card1Panel;
     private CardPanel card2Panel;
-    private JLabel nameLabel;
-    private JLabel stackLabel;
-    Player player;
+    private Player player;
+    private InfoPanel infoPanel;
 
-    public PlayerPanel(Player player, Double stackSize) {
+    public PlayerPanel(Player player, InfoPanel infoPanel) {
         this.player = player;
+        this.infoPanel = infoPanel;
         setBackground(new Color(0, 0, 0, 0));
-
-        stackLabel = new JLabel("" + (stackSize.intValue()));
-        stackLabel.setBounds(0, 0, cardWidth + 15, 20);
-//        stackLabel.setBackground(new Color(0, 0, 0, 0));
-//        stackLabel.setForeground(Color.WHITE);
-//        add(stackLabel);
-
-        nameLabel = new JLabel(player.toString());
-        nameLabel.setBounds(0, 21, cardWidth + 15, 20);
-//        nameLabel.setBackground(new Color(0, 0, 0, 0));
-//        nameLabel.setForeground(Color.WHITE);
-//        add(nameLabel);
     }
 
     public void setCard1(Card card1) {
         card1Panel = new CardPanel(card1);
         card1Panel.setBounds(0, 0, cardWidth, cardHeight);
         add(card1Panel, 0);
-//        repaint();
         getParent().repaint();
     }
 
@@ -55,18 +42,6 @@ public class PlayerPanel extends JPanel {
         card2Panel = new CardPanel(card2);
         card2Panel.setBounds(15, 6, cardWidth, cardHeight);
         add(card2Panel, 0);
-//        repaint();
         getParent().repaint();
     }
-
-    //    public void paint(Graphics g) {
-//        card1Panel.paint(g);
-//        card2Panel.paint(g);
-//    }
-
-//    public void update(Graphics g) {
-//        card1Panel.update(g);
-//        card2Panel.update(g);
-//    }
-
 }

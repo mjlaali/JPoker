@@ -8,10 +8,11 @@ import poker.ShowDown;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.HashMap;
-import java.util.Random;
 
 /**
  * Created by IntelliJ IDEA.
@@ -23,7 +24,6 @@ import java.util.Random;
 public class GraphicsUserInterface extends JFrame implements UserInterface, PlayerObserver {
     private Map<Player, PlayerPanel> playerPanels = new HashMap<Player, PlayerPanel>();
     private ImagePanel boardPanel;
-    private String backOfCardPath;
 
     public GraphicsUserInterface() throws HeadlessException {
         super("Poker AI");
@@ -40,8 +40,6 @@ public class GraphicsUserInterface extends JFrame implements UserInterface, Play
     }
 
     public void newHand(GameSetting gameSetting) {
-        int rand = new Random().nextInt(6) + 1;
-        backOfCardPath = "images/Back of Card " + rand + ".jpg";
         List<Player> players = gameSetting.getPlayers();
         if (UICoords.playerX1s.length < players.size()) {
             throw new RuntimeException("At most " + UICoords.playerX1s.length + " players are supported by this UI");
@@ -49,16 +47,17 @@ public class GraphicsUserInterface extends JFrame implements UserInterface, Play
         boardPanel.removeAll();
         int i = 0;
         for (Player player : players) {
-            PlayerPanel playerPanel = new PlayerPanel(player, gameSetting.getStackSize(player));
-            playerPanels.put(player, playerPanel);
-            boardPanel.add(playerPanel);
-            playerPanel.setBounds(UICoords.playerX1s[i], UICoords.playerY1s[i], PlayerPanel.panelWidth, PlayerPanel.panelHeight);
-
             InfoPanel infoPanel = new InfoPanel(player.getId(), gameSetting.getStackSize(player));
             boardPanel.add(infoPanel);
             int y = UICoords.playerY1s[i];
             y = (y > getHeight() / 2) ? (y + 80) : y - 35;
             infoPanel.setBounds(UICoords.playerX1s[i] + 5, y, InfoPanel.panelWidth, InfoPanel.panelHeight);
+
+            PlayerPanel playerPanel = new PlayerPanel(player, infoPanel);
+            playerPanels.put(player, playerPanel);
+            boardPanel.add(playerPanel);
+
+            playerPanel.setBounds(UICoords.playerX1s[i], UICoords.playerY1s[i], PlayerPanel.panelWidth, PlayerPanel.panelHeight);
 
             i++;
         }
