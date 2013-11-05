@@ -1,13 +1,10 @@
-package ui;
+package ui.panels;
 
 import players.Player;
 import poker.Card;
-import poker.CardDeck;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.Random;
 
 /**
  * Created with IntelliJ IDEA.
@@ -17,8 +14,8 @@ import java.util.Random;
  * To change this template use File | Settings | File Templates.
  */
 public class PlayerPanel extends JPanel {
-    static int panelWidth = 63, panelHeight = 74;
-    static int cardWidth = 48, cardHeight = 68;
+    public static int panelWidth = 63, panelHeight = 74;
+    public static int cardWidth = 48, cardHeight = 68;
 
     private CardPanel card1Panel;
     private CardPanel card2Panel;

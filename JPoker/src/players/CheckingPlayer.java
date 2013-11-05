@@ -21,15 +21,15 @@ public class CheckingPlayer extends Player {
     }
 
     public void newHand(GameSetting gameSetting) {
-        latestBet = 0;
     }
 
-    public double preflopIs(Card card1, Card card2) {
-        return 0;
+    public void preflopIs(Card card1, Card card2) {
+        latestBet = 0;
     }
 
     public void flopIs(Card flopCard1, Card flopCard2, Card flopCard3) {
-        latestBet = 0;
+        System.out.println("CheckingPlayer.flopIs");
+        latestBet = 1000;
     }
 
     public void turnIs(Card card) {

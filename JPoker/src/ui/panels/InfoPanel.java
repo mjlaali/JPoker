@@ -1,4 +1,4 @@
-package ui;
+package ui.panels;
 
 import javax.swing.*;
 import java.awt.*;
@@ -11,7 +11,7 @@ import java.awt.*;
  * To change this template use File | Settings | File Templates.
  */
 public class InfoPanel extends JPanel {
-    static int panelWidth = 55, panelHeight = 27;
+    public static int panelWidth = 55, panelHeight = 27;
     private String name;
     private double stackSize;
 
@@ -22,14 +22,14 @@ public class InfoPanel extends JPanel {
     }
 
     public void paint(Graphics g) {
-        draw(g);
+        drawInfoPanel(g);
     }
 
     public void update(Graphics g) {
-        draw(g);
+        drawInfoPanel(g);
     }
 
-    private void draw(Graphics g) {
+    private void drawInfoPanel(Graphics g) {
         g.setColor(new Color(57, 51, 25));
         g.fillRect(1, 1, getWidth() - 2, getHeight() - 1);
         g.setColor(new Color(191, 186, 181));

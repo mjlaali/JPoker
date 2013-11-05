@@ -53,7 +53,7 @@ public abstract class Player implements Notifiable {
 		return new PreflopCards(card1, card2);
 	}
 
-	public abstract double preflopIs(Card card1, Card card2);
+	public abstract void preflopIs(Card card1, Card card2);
 
 	public abstract double giveYourBet();
 }

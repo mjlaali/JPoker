@@ -1,4 +1,4 @@
-package ui;
+package ui.panels;
 
 import poker.Card;
 
@@ -11,7 +11,7 @@ import java.util.Random;
 public class CardPanel extends JPanel implements MouseListener {
     private Image frontImage;
     private boolean frontActive;
-    private static int rand = new Random().nextInt(6) + 1;
+    private static int rand = new Random().nextInt(2) + 1;
     private static Image backImage = Toolkit.getDefaultToolkit().getImage("images/Back of Card " + rand + ".jpg");
 
     public CardPanel(Card card) {

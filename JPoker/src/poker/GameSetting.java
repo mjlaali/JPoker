@@ -48,4 +48,14 @@ public class GameSetting {
     public Double getStackSize(Player player) {
         return playerStacks.get(player);
     }
+
+    public int getIndex(Player player) {
+        int index = 0;
+        for (Player p : players) {
+            if (p == player)
+                return index;
+            index++;
+        }
+        return -1;
+    }
 }

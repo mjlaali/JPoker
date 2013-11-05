@@ -49,48 +49,59 @@ public class NotificationManager extends Thread implements Notifiable, PlayerObs
     }
 
     private synchronized void addNotification(Notification notification) {
-        pendingNotifications.addLast(notification);
+        notification.deliver();
+//        pendingNotifications.addLast(notification);
     }
 
     public void newHand(GameSetting gameSetting) {
-        addNotification(new Notification("newHand", new Object[] {gameSetting}));
+        Notification notification = new Notification("newHand", new Object[]{gameSetting});
+        addNotification(notification);
     }
 
     public void flopIs(Card flopCard1, Card flopCard2, Card flopCard3) {
-        addNotification(new Notification("flopIs", new Object[] {flopCard1, flopCard2, flopCard3}));
+        Notification notification = new Notification("flopIs", new Object[]{flopCard1, flopCard2, flopCard3});
+        addNotification(notification);
     }
 
     public void turnIs(Card card) {
-        addNotification(new Notification("turnIs", new Object[] {card}));
+        Notification notification = new Notification("turnIs", new Object[]{card});
+        addNotification(notification);
     }
 
     public void riverIs(Card card) {
-        addNotification(new Notification("riverIs", new Object[] {card}));
+        Notification notification = new Notification("riverIs", new Object[]{card});
+        addNotification(notification);
     }
 
     public void playerFolded(Player foldingPlayer) {
-        addNotification(new Notification("playerFolded", new Object[] {foldingPlayer}));
+        Notification notification = new Notification("playerFolded", new Object[]{foldingPlayer});
+        addNotification(notification);
     }
 
     public void playerBet(Player bettingPlayer, double bet) {
-        addNotification(new Notification("playerBet", new Object[] {bettingPlayer, bet}));
+        Notification notification = new Notification("playerBet", new Object[]{bettingPlayer, bet});
+        addNotification(notification);
     }
 
     public void showDown(ShowDown showDown) {
-        addNotification(new Notification("showDown", new Object[] {showDown}));
+        Notification notification = new Notification("showDown", new Object[]{showDown});
+        addNotification(notification);
     }
 
     public void gameEnds() {
-        addNotification(new Notification("gameEnds", new Object[] {}));
+        Notification notification = new Notification("gameEnds", new Object[]{});
+        addNotification(notification);
         alive = false;
     }
 
     public void firstCardIs(Player player, Card card) {
-        addNotification(new Notification("firstCardIs", new Object[] {player, card}, PlayerObserver.class, playerObserver));
+        Notification notification = new Notification("firstCardIs", new Object[]{player, card}, PlayerObserver.class, playerObserver);
+        addNotification(notification);
     }
 
     public void secondCardIs(Player player, Card card) {
-        addNotification(new Notification("secondCardIs", new Object[] {player, card}, PlayerObserver.class, playerObserver));
+        Notification notification = new Notification("secondCardIs", new Object[]{player, card}, PlayerObserver.class, playerObserver);
+        addNotification(notification);
     }
 
     private class Notification {
