@@ -5,10 +5,8 @@ import players.PlayerObserver;
 import poker.Card;
 import poker.GameSetting;
 import poker.ShowDown;
-import ui.panels.ActionPanel;
-import ui.panels.ImagePanel;
-import ui.panels.InfoPanel;
-import ui.panels.PlayerPanel;
+import poker.ShowDownElement;
+import ui.panels.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -52,7 +50,7 @@ public class GraphicsUserInterface extends JFrame implements UserInterface, Play
         boardPanel.removeAll();
         int i = 0;
         for (Player player : players) {
-            InfoPanel infoPanel = new InfoPanel(player.getId(), currentGame.getStackSize(player));
+            InfoPanel infoPanel = new InfoPanel(player, currentGame);
             boardPanel.add(infoPanel);
             int y = UICoords.playerY1s[i];
             y = (y > getHeight() / 2) ? (y + 80) : y - 35;
@@ -68,7 +66,6 @@ public class GraphicsUserInterface extends JFrame implements UserInterface, Play
         repaint();
     }
 
-    //todo: remove this
     private String constructPath(Card card) {
         return "images/" + card + ".jpg";
     }
@@ -115,14 +112,35 @@ public class GraphicsUserInterface extends JFrame implements UserInterface, Play
 
     public void playerBet(Player bettingPlayer, double bet) {
         hideLatestAction(false);
-        latestActionPanel = new ActionPanel(bet);
+        latestActionPanel = new BetActionPanel(bet);
         boardPanel.add(latestActionPanel);
-        int index = currentGame.getIndex(bettingPlayer);
-        int y = UICoords.playerY1s[index];
-        y = (y > getHeight() / 2) ? (y - 35) : y + 80;
-        latestActionPanel.setBounds(UICoords.playerX1s[index] + 5, y, ActionPanel.panelWidth, ActionPanel.panelHeight);
+        locateActionPanelBounds(bettingPlayer, latestActionPanel);
         repaint();
-        delay(300);
+        delay(400);
+    }
+
+    private void locateActionPanelBounds(Player player, ActionPanel actionPanel) {
+        int index = currentGame.getIndex(player);
+        int x = UICoords.playerX1s[index];
+        int y = UICoords.playerY1s[index];
+        if (index == 0 || index == 1) {
+            x = x + PlayerPanel.panelWidth + 13;
+            y = y + 25;
+        }
+        if (index == 2 || index == 3) {
+            x = x + 5;
+            y = y + PlayerPanel.panelHeight + 11;
+        }
+        if (index == 4 || index == 5) {
+            x = x - ActionPanel.panelWidth - 13;
+            y = y + 25;
+        }
+        if (index == 6 || index == 7) {
+            x = x + 5;
+            y = y - ActionPanel.panelHeight - 11;
+        }
+
+        actionPanel.setBounds(x, y, ActionPanel.panelWidth, ActionPanel.panelHeight);
     }
 
     private void hideLatestAction(boolean repaint) {
@@ -134,7 +152,18 @@ public class GraphicsUserInterface extends JFrame implements UserInterface, Play
     }
 
     public void showDown(ShowDown showDown) {
-
+        hideLatestAction(true);
+        for (ShowDownElement showDownElement : showDown.getElements()) {
+            if (showDownElement.getWinningAmount() > 0) {
+                playerPanels.get(showDownElement.getPlayer()).showCards();
+                ShowDownPanel showDownPanel = new ShowDownPanel(showDownElement);
+                boardPanel.add(showDownPanel);
+                locateActionPanelBounds(showDownElement.getPlayer(), showDownPanel);
+                repaint();
+                delay(400);
+            }
+        }
+        delay(2000);
     }
 
     public void gameEnds() {

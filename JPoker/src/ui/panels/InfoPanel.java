@@ -1,5 +1,8 @@
 package ui.panels;
 
+import players.Player;
+import poker.GameSetting;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -12,13 +15,13 @@ import java.awt.*;
  */
 public class InfoPanel extends JPanel {
     public static int panelWidth = 55, panelHeight = 27;
-    private String name;
-    private double stackSize;
+    private Player player;
+    private GameSetting currentGame;
 
-    public InfoPanel(String name, double stackSize) {
-        this.name = name;
-        this.stackSize = stackSize;
+    public InfoPanel(Player player, GameSetting currentGame) {
         setSize(100, 50);
+        this.player = player;
+        this.currentGame = currentGame;
     }
 
     public void paint(Graphics g) {
@@ -37,7 +40,7 @@ public class InfoPanel extends JPanel {
         g.drawRect(1, getHeight() / 2, getWidth() - 2, getHeight() / 2 - 1);
         Font font = new Font("Comic Sans MS", Font.PLAIN, 9);
         g.setFont(font);
-        g.drawString(name, 4, getHeight() / 2 - 2);
-        g.drawString("$" + stackSize, 5, getHeight() - 4);
+        g.drawString(player.getId(), 4, getHeight() / 2 - 2);
+        g.drawString("$" + currentGame.getStackSize(player), 5, getHeight() - 4);
     }
 }

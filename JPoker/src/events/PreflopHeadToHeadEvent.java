@@ -24,10 +24,10 @@ public class PreflopHeadToHeadEvent extends PokerEvent {
     }
 
     public void modifyYourStats(EventStat stat, ShowDown showDown) {
-        for (ShowDownElement showDownElement1 : showDown.getShowDownElements()) {
+        for (ShowDownElement showDownElement1 : showDown.getElements()) {
             Card[] cards1 = showDownElement1.getHandType().getPreflopCards();
             if (preflopCards1.equals(new PreflopCards(cards1[0], cards1[1]), mindSuit)) {
-                for (ShowDownElement showDownElement2 : showDown.getShowDownElements()) {
+                for (ShowDownElement showDownElement2 : showDown.getElements()) {
                     if (showDownElement1 != showDownElement2) {
                         Card[] cards2 = showDownElement2.getHandType().getPreflopCards();
                         if (preflopCards2.equals(new PreflopCards(cards2[0], cards2[1]), mindSuit)) {

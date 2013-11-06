@@ -41,4 +41,10 @@ public class PlayerPanel extends JPanel {
         add(card2Panel, 0);
         getParent().repaint();
     }
+
+    public void showCards() {
+        card1Panel.showCard(false);
+        card2Panel.showCard(false);
+        repaint();
+    }
 }

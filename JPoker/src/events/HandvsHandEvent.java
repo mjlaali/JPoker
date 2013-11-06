@@ -21,8 +21,8 @@ public class HandvsHandEvent extends PokerEvent {
     }
 
     public void modifyYourStats(EventStat stat, ShowDown showDown) {
-        for (ShowDownElement showDownElement1 : showDown.getShowDownElements()) {
-            for (ShowDownElement showDownElement2 : showDown.getShowDownElements()) {
+        for (ShowDownElement showDownElement1 : showDown.getElements()) {
+            for (ShowDownElement showDownElement2 : showDown.getElements()) {
                 if (showDownElement1 != showDownElement2) {
                     if (showDownElement1.getHandType().getType() == type1 && showDownElement2.getHandType().getType() == type2) {
                         stat.count++;

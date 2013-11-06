@@ -38,8 +38,8 @@ public class UICoords {
         playerX1s[3] = 483; playerY1s[3] = 45;
         playerX1s[4] = 708; playerY1s[4] = 130;
         playerX1s[5] = 708; playerY1s[5] = 310;
-        playerX1s[6] = 483; playerY1s[6] = 400;
-        playerX1s[7] = 232; playerY1s[7] = 400;
+        playerX1s[6] = 483; playerY1s[6] = 420;
+        playerX1s[7] = 232; playerY1s[7] = 420;
 
         for (int i = 0; i < playerX2s.length; i++) {
             playerX2s[i] = playerX1s[i] + secondCardDx;

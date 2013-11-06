@@ -38,9 +38,23 @@ public class CardPanel extends JPanel implements MouseListener {
     }
 
     public void mouseClicked(MouseEvent e) {
+        flip(true);
+    }
+
+    public void showCard(boolean repaint) {
+        setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+        frontActive = true;
+        if (repaint) {
+            getParent().repaint();
+        }
+    }
+
+    public void flip(boolean repaint) {
         setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
         frontActive = !frontActive;
-        getParent().repaint();
+        if (repaint) {
+            getParent().repaint();
+        }
     }
 
     public void mousePressed(MouseEvent e) {

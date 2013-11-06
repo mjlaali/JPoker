@@ -7,11 +7,8 @@ import java.lang.reflect.Method;
 import java.util.LinkedList;
 
 /**
- * Created by IntelliJ IDEA.
  * User: Sina
  * Date: Mar 5, 2012
- * Time: 6:19:28 PM
- * To change this template use File | Settings | File Templates.
  */
 public class NotificationManager extends Thread implements Notifiable, PlayerObserver {
     private Notifiable notifiable;

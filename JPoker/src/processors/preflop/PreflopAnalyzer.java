@@ -27,7 +27,7 @@ public class PreflopAnalyzer extends DefaultNotifiable{
 
 	@Override
 	public void showDown(ShowDown showDown) {
-		for (ShowDownElement showDownElement: showDown.getShowDownElements()){
+		for (ShowDownElement showDownElement: showDown.getElements()){
 			if (showDownElement.getWinningAmount() > 0) //win
 				addOne(showDownElement.getPlayer().getPreFlopCards(), winCount);
 			addOne(showDownElement.getPlayer().getPreFlopCards(), totalCount);

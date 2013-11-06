@@ -5,7 +5,6 @@ import poker.ShowDown;
 import poker.ShowDownElement;
 import poker.GameSetting;
 
-import java.util.List;
 import java.io.IOException;
 
 import players.Player;
@@ -63,7 +62,7 @@ public class ConsoleUI implements UserInterface {
     }
 
     public void showDown(ShowDown showDown) {
-        for (ShowDownElement showDownElement : showDown.getShowDownElements()) {
+        for (ShowDownElement showDownElement : showDown.getElements()) {
             Card[] pocketCards = showDownElement.getHandType().getPreflopCards();
             if (printOut)
                 System.out.println(showDownElement.getPlayer() + " wins " + "$" + showDownElement.getWinningAmount() + "\tpocket: " + pocketCards[0] + ", " + pocketCards[1] + "\thand: " + showDownElement.getHandType());

@@ -16,7 +16,7 @@ public class ShowDown {
         this.showDownElements = showDownElements;
     }
 
-    public List<ShowDownElement> getShowDownElements() {
+    public List<ShowDownElement> getElements() {
         return showDownElements;
     }
 }

@@ -28,7 +28,6 @@ public class CheckingPlayer extends Player {
     }
 
     public void flopIs(Card flopCard1, Card flopCard2, Card flopCard3) {
-        System.out.println("CheckingPlayer.flopIs");
         latestBet = 1000;
     }
 

@@ -19,7 +19,7 @@ public class HandTypeEvent extends PokerEvent {
     }
 
     public void modifyYourStats(EventStat stat, ShowDown showDown) {
-        for (ShowDownElement showDownElement : showDown.getShowDownElements()) {
+        for (ShowDownElement showDownElement : showDown.getElements()) {
             if (showDownElement.getHandType().getType() == type) {
                 stat.count++;
             }

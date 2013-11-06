@@ -28,7 +28,7 @@ public class StaticSettingDecider implements SettingDecider {
 //        externalNotifiables.add(new ConsoleUI(false, false, true, analyzer));
 //        externalNotifiables.add(analyzer);
         NotificationManager manager = new NotificationManager(gui, gui, 100, 30000);
-        manager.start();
+//        manager.start();
         externalNotifiables.add(manager);
         GameSetting gameSetting = new GameSetting(5, 10);
 
