@@ -1,20 +1,14 @@
 package poker;
 
-import players.Player;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
 import exceptions.EarlyFinishedHandException;
 import exceptions.OutOfCardsException;
+import players.Player;
+
+import java.util.*;
 
 /**
- * Created by IntelliJ IDEA.
  * User: Sina
  * Date: Feb 29, 2012
- * Time: 6:21:54 PM
- * To change this template use File | Settings | File Templates.
  */
 public class Dealer {
     private GameSetting gameSetting;
@@ -36,27 +30,26 @@ public class Dealer {
         while (tableOpen) {
             HandSetting handSetting = new HandSetting(gameSetting, smallBlindIndex);
             notifier.notifyNewHandStarted();
-            handSetting.dealPreflop();
-            //noinspection EmptyCatchBlock
             try {
+                // PreFlop
+                handSetting.dealPreFlop();
                 doBettingRound(handSetting);
+                // Flop
                 handSetting.dealFlop();
                 notifier.showFlopToEveryOne(handSetting.getBoard().cards[0], handSetting.getBoard().cards[1], handSetting.getBoard().cards[2]);
                 doBettingRound(handSetting);
+                // Turn
                 handSetting.dealTurn();
                 notifier.showTurnToEveryOne(handSetting.getBoard().cards[3]);
                 doBettingRound(handSetting);
+                // River
                 handSetting.dealRiver();
                 notifier.showRiverToEveryOne(handSetting.getBoard().cards[4]);
                 doBettingRound(handSetting);
-                ShowDown showDown = handSetting.showDown();
-                notifier.announceShowDown(showDown);
+                // Showdown
+                showDown(handSetting);
             } catch (EarlyFinishedHandException e) {
-                handSetting.collectBets();
-                ShowDownElement showDownElement = new ShowDownElement(e.getWinner(), null, handSetting.getStack());
-                List<ShowDownElement> showDownElements = new ArrayList<ShowDownElement>();
-                showDownElements.add(showDownElement);
-                notifier.announceShowDown(new ShowDown(showDownElements));
+                showDown(handSetting);
             }
             smallBlindIndex = (smallBlindIndex + 1) % gameSetting.getPlayers().size();
             handCount++;
@@ -68,30 +61,76 @@ public class Dealer {
     }
 
     private void doBettingRound(HandSetting handSetting) throws EarlyFinishedHandException {
-        // TODO: handle all in requiring stack separation and over stack bet error
-        double lastBet = 0;
-        Player raiser = null;
-        Player currentPlayer = handSetting.getCurrentPlayer();
-        while (currentPlayer != raiser) {
-            double bet = currentPlayer.giveYourBet();
-            if (bet < lastBet) { // negative is going to mean fold and less than lastBet is possibly hack attempt
-                handSetting.foldCurrent();
-                notifier.announceFold(currentPlayer);
-                if (handSetting.getRemainingCount() == 1) {
-                    throw new EarlyFinishedHandException(handSetting.moveNext());
+        BettingRound bettingRound = new BettingRound(handSetting);
+        while (!bettingRound.finished()) {
+            Action action = bettingRound.nextBet();
+            if (action.isFold()) {
+                handSetting.fold(action.getPlayer());
+                notifier.announce(action);
+                if (handSetting.getRemainingInPot() == 1) {
+                    bettingRound.terminate();
+                    throw new EarlyFinishedHandException(bettingRound.getLastBoardRaise().getPlayer());
                 }
             } else {
-                if (bet > lastBet || raiser == null) {
-                    raiser = currentPlayer;
-                    lastBet = bet;
-                }
-                double stackDeduction = handSetting.setBetInFront(currentPlayer, bet);
-                gameSetting.deductStack(currentPlayer, stackDeduction);
-                notifier.announceBet(currentPlayer, bet);
+                double stackDeduction = action.getBetDelta();
+                gameSetting.deductStack(action.getPlayer(), stackDeduction);
+                notifier.announce(action);
             }
-            currentPlayer = handSetting.moveNext();
         }
-        handSetting.collectBets();
+        bettingRound.terminate();
+    }
+
+    public void showDown(HandSetting handSetting) {
+        // Create a map of players who decide to show their hands with the hand type they have
+        Map<Player, HandType> playerHandTypes = new HashMap<Player, HandType>();
+        Pot pot = handSetting.getPot();
+        Iterator<Player> iterator = pot.playerIterator();
+        while (iterator.hasNext()) {
+            Player player = iterator.next();
+            Map<Player, PreflopCards> playerPocketCards = handSetting.getPlayerPocketCards();
+            if (playerPocketCards.containsKey(player)) {
+                HandType handType = new HandTypeFinder(playerPocketCards.get(player), handSetting.getBoard()).findHandType();
+                if (player.decideShowOrMuck(handType)) {
+                    playerHandTypes.put(player, handType);
+                    notifier.notifyShowCards(player, handType);
+                } else {
+                    notifier.notifyMuckCards(player);
+                }
+            }
+        }
+
+        // decide how each side is divided based on retrieved hand types
+        List<Player> playersInvolved = pot.getPlayersInvolved();
+        for (Pot sidePot : pot.getSidePots()) {
+            handlePot(playerHandTypes, playersInvolved, sidePot);
+            playersInvolved.removeAll(sidePot.getAttachedPlayers());
+        }
+        handlePot(playerHandTypes, playersInvolved, pot);
+    }
+
+    private void handlePot(Map<Player, HandType> playerHandTypes, List<Player> playersInvolved, Pot pot) {
+        List<Player> potWinners =  chooseWinners(playersInvolved, playerHandTypes);
+        double eachShare = pot.getValue() / potWinners.size();
+        for (Player player : potWinners) {
+            gameSetting.increaseStack(player, eachShare);
+        }
+        notifier.announceWin(potWinners, pot.getValue());
+    }
+
+    private List<Player> chooseWinners(List<Player> playersInvolved, Map<Player, HandType> playerHandTypes) {
+        List<Player> winners = new ArrayList<Player>();
+        HandType bestHandType = null;
+        for (Player player : playersInvolved) {
+            HandType handType = playerHandTypes.get(player);
+            if (bestHandType == null || handType.compareTo(bestHandType) > 0) {
+                winners = new ArrayList<Player>();
+                winners.add(player);
+                bestHandType = handType;
+            } else if (handType.compareTo(bestHandType) == 0) {
+                winners.add(player);
+            }
+        }
+        return winners;
     }
 
     class Notifier {
@@ -101,21 +140,9 @@ public class Dealer {
             this.notifiables = notifiables;
         }
 
-        private void announceFold(Player foldingPlayer) {
+        private void announce(Action action) {
             for (Notifiable notifiable : notifiables) {
-                notifiable.playerFolded(foldingPlayer);
-            }
-        }
-
-        private void announceShowDown(ShowDown showDownElements) {
-            for (Notifiable notifiable : notifiables) {
-                notifiable.showDown(showDownElements);
-            }
-        }
-
-        private void announceBet(Player bettingPlayer, double bet) {
-            for (Notifiable notifiable : notifiables) {
-                notifiable.playerBet(bettingPlayer, bet);
+                notifiable.handle(action);
             }
         }
 
@@ -146,6 +173,24 @@ public class Dealer {
         public void notifyGameEnds() {
             for (Notifiable notifiable : notifiables) {
                 notifiable.gameEnds();
+            }
+        }
+
+        public void notifyShowCards(Player player, HandType handType) {
+            for (Notifiable notifiable : notifiables) {
+                notifiable.cardsShown(player, handType);
+            }
+        }
+
+        public void notifyMuckCards(Player player) {
+            for (Notifiable notifiable : notifiables) {
+                notifiable.cardsMucked(player);
+            }
+        }
+
+        public void announceWin(List<Player> potWinners, double potValue) {
+            for (Notifiable notifiable : notifiables) {
+                notifiable.potWon(potWinners, potValue);
             }
         }
     }

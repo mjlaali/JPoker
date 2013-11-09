@@ -5,11 +5,8 @@ import players.Player;
 import java.util.*;
 
 /**
- * Created by IntelliJ IDEA.
  * User: Sina
  * Date: Feb 29, 2012
- * Time: 6:23:48 PM
- * To change this template use File | Settings | File Templates.
  */
 public class GameSetting {
     private double smallBlind;
@@ -39,16 +36,6 @@ public class GameSetting {
         playerStacks.put(player, stack);
     }
 
-    public double deductStack(Player player, double amount) {
-        double stack = playerStacks.get(player) - amount;
-        playerStacks.put(player, stack);
-        return stack;
-    }
-
-    public Double getStackSize(Player player) {
-        return playerStacks.get(player);
-    }
-
     public int getIndex(Player player) {
         int index = 0;
         for (Player p : players) {
@@ -57,5 +44,19 @@ public class GameSetting {
             index++;
         }
         return -1;
+    }
+
+    public Double getStackSize(Player player) {
+        return playerStacks.get(player);
+    }
+
+    public double deductStack(Player player, double amount) {
+        return increaseStack(player, -amount);
+    }
+
+    public double increaseStack(Player player, double amount) {
+        double stack = playerStacks.get(player) + amount;
+        playerStacks.put(player, stack);
+        return stack;
     }
 }

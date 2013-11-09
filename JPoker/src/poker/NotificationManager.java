@@ -70,13 +70,9 @@ public class NotificationManager extends Thread implements Notifiable, PlayerObs
         addNotification(notification);
     }
 
-    public void playerFolded(Player foldingPlayer) {
-        Notification notification = new Notification("playerFolded", new Object[]{foldingPlayer});
-        addNotification(notification);
-    }
-
-    public void playerBet(Player bettingPlayer, double bet) {
-        Notification notification = new Notification("playerBet", new Object[]{bettingPlayer, bet});
+    @Override
+    public void handle(Action action) {
+        Notification notification = new Notification("handle", new Object[]{action});
         addNotification(notification);
     }
 
@@ -89,6 +85,24 @@ public class NotificationManager extends Thread implements Notifiable, PlayerObs
         Notification notification = new Notification("gameEnds", new Object[]{});
         addNotification(notification);
         alive = false;
+    }
+
+    @Override
+    public void cardsShown(Player player, HandType handType) {
+        Notification notification = new Notification("cardsShown", new Object[]{player, handType});
+        addNotification(notification);
+    }
+
+    @Override
+    public void cardsMucked(Player player) {
+        Notification notification = new Notification("cardsMucked", new Object[]{player});
+        addNotification(notification);
+    }
+
+    @Override
+    public void potWon(Iterable<Player> potWinners, double eachValue) {
+        Notification notification = new Notification("potWon", new Object[]{potWinners, eachValue});
+        addNotification(notification);
     }
 
     public void firstCardIs(Player player, Card card) {

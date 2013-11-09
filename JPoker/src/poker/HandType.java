@@ -1,17 +1,12 @@
 package poker;
 
-import poker.Card;
-
-import java.util.List;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 /**
- * Created by IntelliJ IDEA.
  * User: Sina
  * Date: Mar 2, 2012
- * Time: 1:06:45 PM
- * To change this template use File | Settings | File Templates.
  */
 public class HandType implements Comparable<HandType> {
     private PokerHandType type;
@@ -30,34 +25,22 @@ public class HandType implements Comparable<HandType> {
         return type;
     }
 
-    public void setType(PokerHandType type) {
-        this.type = type;
-    }
-
     public Card[] getFiveCardsByValue() {
         return fiveCardsByValue;
-    }
-
-    public void setFiveCardsByValue(Card[] fiveCardsByValue) {
-        this.fiveCardsByValue = fiveCardsByValue;
     }
 
     public Card[] getPreflopCards() {
         return preflopCards;
     }
 
-    public void setPreflopCards(Card[] preflopCards) {
-        this.preflopCards = preflopCards;
-    }
-
     public Card[] getBoardCards() {
         return boardCards;
     }
 
-    public void setBoardCards(Card[] boardCards) {
-        this.boardCards = boardCards;
-    }
-
+    /*
+    Compares two hand types, returns 1 if this is a better hand than otherHandType, 0 if their the same hand and -1 if
+    this is worse
+     */
     public int compareTo(HandType otherHandType) {
         if (type.getRank() < otherHandType.getType().getRank()) {
             return 1;

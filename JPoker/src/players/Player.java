@@ -1,6 +1,7 @@
 package players;
 
 import poker.Card;
+import poker.HandType;
 import poker.Notifiable;
 import poker.PreflopCards;
 
@@ -8,12 +9,8 @@ import java.util.List;
 import java.util.ArrayList;
 
 /**
- * Created by IntelliJ IDEA.
  * User: Sina
  * Date: Feb 29, 2012
- * Time: 9:15:02 PM
- * To change this template use File | Settings | File Templates.
- * TODO: player should know its stack. so it need to add setStack functions
  */
 public abstract class Player implements Notifiable {
 	private String id;
@@ -55,5 +52,13 @@ public abstract class Player implements Notifiable {
 
 	public abstract void preflopIs(Card card1, Card card2);
 
+    /*
+    Called by dealer to ask for this player's bet when it's this player's turn in a betting round
+     */
 	public abstract double giveYourBet();
+
+    /*
+    Called by dealer to ask if this player wants to show cards. True indicates show and false indicates muck
+     */
+    public abstract boolean decideShowOrMuck(HandType handType);
 }

@@ -7,11 +7,8 @@ import javax.swing.*;
 import java.awt.*;
 
 /**
- * Created with IntelliJ IDEA.
  * User: Admin
  * Date: 25/10/13
- * Time: 5:22 PM
- * To change this template use File | Settings | File Templates.
  */
 public class PlayerPanel extends JPanel {
     public static int panelWidth = 63, panelHeight = 74;

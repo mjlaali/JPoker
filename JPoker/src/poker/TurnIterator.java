@@ -6,49 +6,49 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by IntelliJ IDEA.
  * User: Sina
  * Date: Feb 29, 2012
- * Time: 7:29:04 PM
- * To change this template use File | Settings | File Templates.
  */
 public class TurnIterator {
-    private List<Player> players;
-    private int smallBlindIndex;
+    private List<Player> playersWithStack = new ArrayList<Player>();
     private int currentIndex;
-    private List<Integer> foldedPlayerIndices = new ArrayList<Integer>();
+    private List<Integer> foldOrAllInPlayerIndices = new ArrayList<Integer>();
 
-    public TurnIterator(List<Player> players, int startingSmallBlindIndex) {
-        this.players = players;
-        currentIndex = this.smallBlindIndex = startingSmallBlindIndex;
+    public TurnIterator(GameSetting gameSetting, int startingSmallBlindIndex) {
+        int index = 0;
+        for (Player player : gameSetting.getPlayers()) {
+            if (gameSetting.getStackSize(player) == 0)
+                foldOrAllInPlayerIndices.add(index);
+            playersWithStack.add(player);
+            index++;
+        }
+        currentIndex = startingSmallBlindIndex;
+        passFoldedPlayers();
     }
 
     public Player current() {
-        return players.get(currentIndex);
+        return playersWithStack.get(currentIndex);
     }
 
-    public Player foldCurrent() {
-        foldedPlayerIndices.add(currentIndex);
-        return players.get(currentIndex);
+    public Player removeCurrent() {
+        foldOrAllInPlayerIndices.add(currentIndex);
+        return playersWithStack.get(currentIndex);
     }
 
     public void moveTurn() {
-        currentIndex = (currentIndex + 1) % players.size();
-        passFoldedPlayers();
-    }
-
-    public void betRoundDone() {
-        currentIndex = smallBlindIndex;
-        passFoldedPlayers();
+        if (getRemainingCount() > 0) {
+            currentIndex = (currentIndex + 1) % playersWithStack.size();
+            passFoldedPlayers();
+        }
     }
 
     private void passFoldedPlayers() {
-        while (foldedPlayerIndices.contains(currentIndex)) {
-            currentIndex = (currentIndex + 1) % players.size();
+        while (foldOrAllInPlayerIndices.contains(currentIndex)) {
+            currentIndex = (currentIndex + 1) % playersWithStack.size();
         }
     }
 
     public int getRemainingCount() {
-        return players.size() - foldedPlayerIndices.size();
+        return playersWithStack.size() - foldOrAllInPlayerIndices.size();
     }
 }

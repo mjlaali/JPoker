@@ -1,73 +1,60 @@
 package poker;
 
-import java.io.IOException;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.TreeMap;
-
-import players.Player;
 import exceptions.OutOfCardsException;
+import players.Player;
+
+import java.util.*;
+import java.util.Map.Entry;
 
 /**
- * Created by IntelliJ IDEA.
  * User: Sina
  * Date: Mar 1, 2012
- * Time: 12:45:33 PM
- * To change this template use File | Settings | File Templates.
  */
 public class HandSetting {
-	//The setting of game and players
+	//The setting of current game and players
     private GameSetting gameSetting;
-    //A shuffle cards
+    private int smallBlindIndex;
+    //The deck of cards
     private CardDeck cardDeck = new CardDeck();
-    //an iterator over player which show a turn
-    private TurnIterator turnIterator;
-    
     private Map<Player, PreflopCards> playerPocketCards;
-    private Map<Player, Double> playerBetInFronts;
     //Shared card in the board
     private BoardCards boardCards;
-    private double stack = 0;
+    private Pot pot;
 
     public HandSetting(GameSetting gameSetting, int smallBlindIndex) {
         this.gameSetting = gameSetting;
-        turnIterator = new TurnIterator(gameSetting.getPlayers(), smallBlindIndex);
-        clearPlayerBetInFronts();
+        this.smallBlindIndex = smallBlindIndex;
+        pot = new Pot();
     }
 
-    public double getStack() {
-        return stack;
+    public int getSmallBlindIndex() {
+        return smallBlindIndex;
     }
 
-    public CardDeck getCardDeck() {
-        return cardDeck;
+    public GameSetting getGameSetting() {
+        return gameSetting;
     }
 
     public BoardCards getBoard() {
         return boardCards;
     }
 
-    public Player getCurrentPlayer() {
-        return turnIterator.current();
-    }
-
-    public void foldCurrent() {
-        Player player = turnIterator.foldCurrent();
+    public void fold(Player player) {
         playerPocketCards.remove(player);
     }
 
-    public void dealPreflop() throws OutOfCardsException {
+    public void dealPreFlop() throws OutOfCardsException {
         playerPocketCards = new HashMap<Player, PreflopCards>();
-        for (Player player : gameSetting.getPlayers()) {
+        Iterator<Player> iterator = playerIterator();
+        while (iterator.hasNext()) {
+            Player player = iterator.next();
             Card card = cardDeck.nextCard();
             player.firstCardIs(card);
             playerPocketCards.put(player, new PreflopCards(card));
         }
-        for (Player player : gameSetting.getPlayers()) {
+        iterator = playerIterator();
+        while (iterator.hasNext()) {
+            Player player = iterator.next();
             Card card = cardDeck.nextCard();
             player.secondCardIs(card);
             playerPocketCards.get(player).setCard2(card);
@@ -89,65 +76,41 @@ public class HandSetting {
         boardCards.cards[4] = cardDeck.nextCard();
     }
 
-    public int getRemainingCount() {
-        return turnIterator.getRemainingCount();
+    public Pot getPot() {
+        return pot;
     }
 
-    public Player moveNext() {
-        turnIterator.moveTurn();
-        return turnIterator.current();
+    public int getRemainingInPot() {
+        return playerPocketCards.size();
     }
 
-    public double setBetInFront(Player player, double bet) {
-        double previousBet = playerBetInFronts.get(player);
-        playerBetInFronts.put(player, bet);
-        return bet - previousBet;
+    public Map<Player, PreflopCards> getPlayerPocketCards() {
+        return playerPocketCards;
     }
 
-    private void clearPlayerBetInFronts() {
-        playerBetInFronts = new HashMap<Player, Double>();
-        for (Player player : gameSetting.getPlayers()) {
-            playerBetInFronts.put(player, (double) 0);
-        }
-    }
+    private Iterator<Player> playerIterator() {
+        return new Iterator<Player>() {
+            private int index = smallBlindIndex;
+            boolean done = false;
 
-    public void collectBets() {
-        for (Double betInFront : playerBetInFronts.values()) {
-            stack += betInFront;
-        }
-        clearPlayerBetInFronts();
-        if (stack == 0)
-        	stack = 1;
-    }
-
-    public ShowDown showDown() {
-        //TODO: handle all in requiring stack separation and over stack bet error
-        Map<HandType, List<Player>> playerHandTypes = new TreeMap<HandType, List<Player>>();
-        for (Player player : playerPocketCards.keySet()) {
-            HandTypeFinder handTypeFinder = new HandTypeFinder(playerPocketCards.get(player), boardCards);
-            HandType handType = handTypeFinder.findHandType();
-            List<Player> playersWithHand = playerHandTypes.get(handType);
-            if (playersWithHand == null){
-            	playersWithHand = new LinkedList<Player>();
-            	playerHandTypes.put(handType, playersWithHand);
+            @Override
+            public boolean hasNext() {
+                return !done;
             }
-            playersWithHand.add(player);
-        }
 
-        List<ShowDownElement> showDownElements = new LinkedList<ShowDownElement>();
-        int index = 1;
-        for (Entry<HandType, List<Player>> aHandWithPlayers: playerHandTypes.entrySet()){
-        	double playerWinningStack = 0;
-        	if (index == playerHandTypes.size()) //these player have best hands of this game
-        		playerWinningStack = stack / aHandWithPlayers.getValue().size();
-        	for (Player player: aHandWithPlayers.getValue()){
-        		showDownElements.add(new ShowDownElement(player, aHandWithPlayers.getKey(), playerWinningStack));
-        	}
-        	++index;
-        }
-        
-        Collections.reverse(showDownElements);
+            @Override
+            public Player next() {
+                Player player = gameSetting.getPlayers().get(index);
+                index = (index + 1) % gameSetting.getPlayers().size();
+                if (index == smallBlindIndex) {
+                    done = true;
+                }
+                return player;
+            }
 
-        return new ShowDown(showDownElements);
+            @Override
+            public void remove() {
+            }
+        };
     }
 }

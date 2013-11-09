@@ -50,11 +50,7 @@ public class Analyzer implements Notifiable {
 
     }
 
-    public void playerFolded(Player foldingPlayer) {
-
-    }
-
-    public void playerBet(Player bettingPlayer, double bet) {
+    public void handle(Action action) {
 
     }
 
@@ -64,6 +60,18 @@ public class Analyzer implements Notifiable {
 
     public void gameEnds() {
 
+    }
+
+    @Override
+    public void cardsShown(Player player, HandType handType) {
+    }
+
+    @Override
+    public void cardsMucked(Player player) {
+    }
+
+    @Override
+    public void potWon(Iterable<Player> potWinners, double eachValue) {
     }
 
     private void computeStats() {

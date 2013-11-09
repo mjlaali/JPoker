@@ -16,7 +16,7 @@ public class CardPanel extends JPanel implements MouseListener {
 
     public CardPanel(Card card) {
         frontImage = Toolkit.getDefaultToolkit().getImage(constructImagePath(card));
-        frontActive = false;
+        frontActive = true;
         setBackground(new Color(0, 0, 0, 0));
         this.addMouseListener(this);
     }

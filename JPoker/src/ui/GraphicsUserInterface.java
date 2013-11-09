@@ -2,10 +2,8 @@ package ui;
 
 import players.Player;
 import players.PlayerObserver;
-import poker.Card;
-import poker.GameSetting;
-import poker.ShowDown;
-import poker.ShowDownElement;
+import poker.*;
+import poker.Action;
 import ui.panels.*;
 
 import javax.swing.*;
@@ -15,11 +13,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Created by IntelliJ IDEA.
  * User: Sina
  * Date: Mar 4, 2012
- * Time: 9:47:12 PM
- * To change this template use File | Settings | File Templates.
  */
 public class GraphicsUserInterface extends JFrame implements UserInterface, PlayerObserver {
     private Map<Player, PlayerPanel> playerPanels = new HashMap<Player, PlayerPanel>();
@@ -107,14 +102,12 @@ public class GraphicsUserInterface extends JFrame implements UserInterface, Play
         delay(200);
     }
 
-    public void playerFolded(Player foldingPlayer) {
-    }
-
-    public void playerBet(Player bettingPlayer, double bet) {
+    @Override
+    public void handle(Action action) {
         hideLatestAction(false);
-        latestActionPanel = new BetActionPanel(bet);
+        latestActionPanel = new BetActionPanel(action.getBet());
         boardPanel.add(latestActionPanel);
-        locateActionPanelBounds(bettingPlayer, latestActionPanel);
+        locateActionPanelBounds(action.getPlayer(), latestActionPanel);
         repaint();
         delay(400);
     }
@@ -151,23 +144,30 @@ public class GraphicsUserInterface extends JFrame implements UserInterface, Play
         }
     }
 
-    public void showDown(ShowDown showDown) {
-        hideLatestAction(true);
-        for (ShowDownElement showDownElement : showDown.getElements()) {
-            if (showDownElement.getWinningAmount() > 0) {
-                playerPanels.get(showDownElement.getPlayer()).showCards();
-                ShowDownPanel showDownPanel = new ShowDownPanel(showDownElement);
-                boardPanel.add(showDownPanel);
-                locateActionPanelBounds(showDownElement.getPlayer(), showDownPanel);
-                repaint();
-                delay(400);
-            }
-        }
-        delay(2000);
-    }
-
     public void gameEnds() {
 
+    }
+
+    @Override
+    public void cardsShown(Player player, HandType handType) {
+        playerPanels.get(player).showCards();
+    }
+
+    @Override
+    public void cardsMucked(Player player) {
+    }
+
+    @Override
+    public void potWon(Iterable<Player> potWinners, double eachValue) {
+        hideLatestAction(true);
+        for (Player player : potWinners) {
+            ShowDownPanel showDownPanel = new ShowDownPanel(player, eachValue);
+            boardPanel.add(showDownPanel);
+            locateActionPanelBounds(player, showDownPanel);
+            repaint();
+            delay(400);
+        }
+        delay(2000);
     }
 
     public void firstCardIs(Player player, Card card) {

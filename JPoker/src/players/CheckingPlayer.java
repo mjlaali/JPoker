@@ -1,17 +1,12 @@
 package players;
 
-import poker.Card;
-import poker.ShowDown;
-import poker.GameSetting;
+import poker.*;
 
 import java.util.List;
 
 /**
- * Created by IntelliJ IDEA.
  * User: Sina
  * Date: Feb 29, 2012
- * Time: 11:31:28 PM
- * To change this template use File | Settings | File Templates.
  */
 public class CheckingPlayer extends Player {
     private double latestBet;
@@ -28,32 +23,42 @@ public class CheckingPlayer extends Player {
     }
 
     public void flopIs(Card flopCard1, Card flopCard2, Card flopCard3) {
-        latestBet = 1000;
+        latestBet = 4500;
     }
 
     public void turnIs(Card card) {
-        latestBet = 0;
+        latestBet = 1000;
     }
 
     public void riverIs(Card card) {
         latestBet = 0;
     }
 
+    public void handle(Action action) {
+    }
+
     public double giveYourBet() {
         return latestBet;
     }
 
-    public void playerFolded(Player foldingPlayer) {
-    }
-
-    public void playerBet(Player bettingPlayer, double bet) {
-        latestBet = bet;
-    }
-
-    public void showDown(ShowDown showDown) {
+    @Override
+    public boolean decideShowOrMuck(HandType handType) {
+        return true;
     }
 
     public void gameEnds() {
 
+    }
+
+    @Override
+    public void cardsShown(Player player, HandType handType) {
+    }
+
+    @Override
+    public void cardsMucked(Player player) {
+    }
+
+    @Override
+    public void potWon(Iterable<Player> potWinners, double eachValue) {
     }
 }

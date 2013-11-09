@@ -9,33 +9,54 @@ import java.util.Map.Entry;
 import java.util.TreeMap;
 
 import players.CheckingPlayer;
+import players.Player;
 import players.PlayerObserver;
-import poker.Dealer;
-import poker.DefaultNotifiable;
-import poker.GameSetting;
-import poker.Notifiable;
-import poker.PreflopCards;
-import poker.ShowDown;
-import poker.ShowDownElement;
+import poker.*;
 import exceptions.OutOfCardsException;
 
-public class PreflopAnalyzer extends DefaultNotifiable{
+public class PreflopAnalyzer implements Notifiable {
 	private PreflopCardsComparator comparator = new PreflopCardsComparator();
 	private Map<PreflopCards, Integer> winCount = new TreeMap<PreflopCards, Integer>(comparator);
 	private Map<PreflopCards, Integer> totalCount = new TreeMap<PreflopCards, Integer>(comparator);
 	private int total = 0;
 
-	@Override
-	public void showDown(ShowDown showDown) {
-		for (ShowDownElement showDownElement: showDown.getElements()){
-			if (showDownElement.getWinningAmount() > 0) //win
-				addOne(showDownElement.getPlayer().getPreFlopCards(), winCount);
-			addOne(showDownElement.getPlayer().getPreFlopCards(), totalCount);
-		}
-		++total;
-	}
+    @Override
+    public void newHand(GameSetting gameSetting) {
+    }
 
-	private void addOne(PreflopCards preFlopCards, Map<PreflopCards, Integer> toAdd) {
+    @Override
+    public void flopIs(Card flopCard1, Card flopCard2, Card flopCard3) {
+    }
+
+    @Override
+    public void turnIs(Card card) {
+    }
+
+    @Override
+    public void riverIs(Card card) {
+    }
+
+    @Override
+    public void handle(Action action) {
+    }
+
+    @Override
+    public void gameEnds() {
+    }
+
+    @Override
+    public void cardsShown(Player player, HandType handType) {
+    }
+
+    @Override
+    public void cardsMucked(Player player) {
+    }
+
+    @Override
+    public void potWon(Iterable<Player> potWinners, double eachValue) {
+    }
+
+    private void addOne(PreflopCards preFlopCards, Map<PreflopCards, Integer> toAdd) {
 		Integer old = toAdd.get(preFlopCards);
 		if (old == null)
 			toAdd.put(preFlopCards, 1);
