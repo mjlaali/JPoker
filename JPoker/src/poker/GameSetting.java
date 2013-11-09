@@ -9,7 +9,7 @@ import java.util.*;
  * User: Sina
  * Date: Feb 29, 2012
  */
-public class GameSetting {
+public class GameSetting implements GameInfo {
     private double smallBlind;
     private double bigBlind;
     private List<Player> players = new ArrayList<Player>();

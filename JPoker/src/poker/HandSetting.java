@@ -4,15 +4,15 @@ import exceptions.OutOfCardsException;
 import players.Player;
 import players.PlayerObserver;
 
-import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
  * User: Sina
  * Date: Mar 1, 2012
  */
-public class HandSetting {
+public class HandSetting implements HandInfo {
 	//The setting of current game and players
     private GameSetting gameSetting;
     private int smallBlindIndex;
@@ -46,7 +46,7 @@ public class HandSetting {
     }
 
     public void dealPreFlop() throws OutOfCardsException {
-        playerPocketCards = new HashMap<Player, PreflopCards>();
+        playerPocketCards = new LinkedHashMap<Player, PreflopCards>();
         Iterator<Player> iterator = playerIterator();
         while (iterator.hasNext()) {
             Player player = iterator.next();
@@ -96,7 +96,12 @@ public class HandSetting {
         return playerPocketCards;
     }
 
-    private Iterator<Player> playerIterator() {
+    @Override
+    public GameInfo getGameInfo() {
+        return gameSetting;
+    }
+
+    public Iterator<Player> playerIterator() {
         return new Iterator<Player>() {
             private int index = smallBlindIndex;
             boolean done = false;
@@ -120,5 +125,28 @@ public class HandSetting {
             public void remove() {
             }
         };
+    }
+
+    @Override
+    public Iterator<Player> inPotPlayerIterator() {
+        return playerPocketCards.keySet().iterator();
+    }
+
+    @Override
+    public Player getSmallBlindPlayer() {
+        return gameSetting.getPlayers().get(smallBlindIndex);
+    }
+
+    @Override
+    public Player getBigBlindPlayer() {
+        int index = (smallBlindIndex + 1) % gameSetting.getPlayers().size();
+        return gameSetting.getPlayers().get(index);
+    }
+
+    @Override
+    public Player getDealer() {
+        int size = gameSetting.getPlayers().size();
+        int index = (smallBlindIndex + size - 1) % size;
+        return gameSetting.getPlayers().get(index);
     }
 }
