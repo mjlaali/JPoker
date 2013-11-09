@@ -17,7 +17,7 @@ public class PreflopAnalyzer implements Notifiable {
 	private int total = 0;
 
     @Override
-    public void newHand(GameSetting gameSetting) {
+    public void newHand(HandSetting handSetting) {
     }
 
     @Override

@@ -20,6 +20,7 @@ public class GraphicsUserInterface extends JFrame implements UserInterface, Play
     private Map<Player, PlayerPanel> playerPanels = new HashMap<Player, PlayerPanel>();
     private ImagePanel boardPanel;
     private GameSetting currentGame;
+    private HandSetting currentHand;
     private ActionPanel latestActionPanel;
 
     public GraphicsUserInterface() throws HeadlessException {
@@ -36,8 +37,9 @@ public class GraphicsUserInterface extends JFrame implements UserInterface, Play
         getContentPane().add(boardPanel);
     }
 
-    public void newHand(GameSetting gameSetting) {
-        this.currentGame = gameSetting;
+    public void newHand(HandSetting handSetting) {
+        this.currentGame = handSetting.getGameSetting();
+        this.currentHand = handSetting;
         List<Player> players = currentGame.getPlayers();
         if (UICoords.playerX1s.length < players.size()) {
             throw new RuntimeException("At most " + UICoords.playerX1s.length + " players are supported by this UI");

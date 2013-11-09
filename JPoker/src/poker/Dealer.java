@@ -14,6 +14,7 @@ public class Dealer {
     private GameSetting gameSetting;
     private Notifier notifier;
 
+    // todo: get cardDeck from a factory so that outsiders can test certain scenarios repeatedly
     public Dealer(GameSetting gameSetting, List<Notifiable> externalNotifiables) {
         this.gameSetting = gameSetting;
         List<Notifiable> notifiables = new ArrayList<Notifiable>();
@@ -29,7 +30,7 @@ public class Dealer {
         
         while (tableOpen) {
             HandSetting handSetting = new HandSetting(gameSetting, smallBlindIndex);
-            notifier.notifyNewHandStarted();
+            notifier.notifyNewHandStarted(handSetting);
             try {
                 // PreFlop
                 handSetting.dealPreFlop();
@@ -146,9 +147,9 @@ public class Dealer {
             }
         }
 
-        public void notifyNewHandStarted() {
+        public void notifyNewHandStarted(HandSetting handSetting) {
             for (Notifiable notifiable : notifiables) {
-                notifiable.newHand(gameSetting);
+                notifiable.newHand(handSetting);
             }
         }
 

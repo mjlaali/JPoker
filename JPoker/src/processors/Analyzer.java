@@ -33,7 +33,7 @@ public class Analyzer implements Notifiable {
         ));
     }
 
-    public void newHand(GameSetting gameSetting) {
+    public void newHand(HandSetting handSetting) {
 
     }
 

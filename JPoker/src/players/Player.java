@@ -22,10 +22,6 @@ public abstract class Player implements Notifiable {
 		return id;
 	}
 
-	public String toString() {
-		return id;
-	}
-
 	public abstract void firstCardIs(Card card);
 
 	public abstract void secondCardIs(Card card);
@@ -39,4 +35,8 @@ public abstract class Player implements Notifiable {
     Called by dealer to ask if this player wants to show cards. True indicates show and false indicates muck
      */
     public abstract boolean decideShowOrMuck(HandType handType);
+
+    public String toString() {
+        return id;
+    }
 }

@@ -50,8 +50,8 @@ public class NotificationManager extends Thread implements Notifiable, PlayerObs
 //        pendingNotifications.addLast(notification);
     }
 
-    public void newHand(GameSetting gameSetting) {
-        Notification notification = new Notification("newHand", new Object[]{gameSetting});
+    public void newHand(HandSetting handSetting) {
+        Notification notification = new Notification("newHand", new Object[]{handSetting});
         addNotification(notification);
     }
 

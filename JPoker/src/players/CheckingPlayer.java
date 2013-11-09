@@ -2,8 +2,6 @@ package players;
 
 import poker.*;
 
-import java.util.List;
-
 /**
  * User: Sina
  * Date: Feb 29, 2012
@@ -15,7 +13,7 @@ public class CheckingPlayer extends Player {
         super(id);
     }
 
-    public void newHand(GameSetting gameSetting) {
+    public void newHand(HandSetting handSetting) {
     }
 
     @Override
