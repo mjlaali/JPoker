@@ -1,7 +1,6 @@
 package ui.panels;
 
 import players.Player;
-import poker.ShowDownElement;
 
 import java.awt.*;
 

@@ -1,7 +1,6 @@
 package events;
 
-import events.EventStat;
-import poker.ShowDown;
+import poker.HandType;
 
 /**
  * Created by IntelliJ IDEA.
@@ -11,7 +10,7 @@ import poker.ShowDown;
  * To change this template use File | Settings | File Templates.
  */
 public abstract class PokerEvent {
-    public abstract void modifyYourStats(EventStat stat, ShowDown showDown);
+    public abstract void modifyYourStats(EventStat stat, HandType handType);
 
     public abstract String getName();
 

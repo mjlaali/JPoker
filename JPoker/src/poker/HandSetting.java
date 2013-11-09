@@ -2,9 +2,11 @@ package poker;
 
 import exceptions.OutOfCardsException;
 import players.Player;
+import players.PlayerObserver;
 
-import java.util.*;
-import java.util.Map.Entry;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 /**
  * User: Sina
@@ -50,6 +52,9 @@ public class HandSetting {
             Player player = iterator.next();
             Card card = cardDeck.nextCard();
             player.firstCardIs(card);
+            for (PlayerObserver playerObserver : gameSetting.getObservers(player)) {
+                playerObserver.firstCardIs(player, card);
+            }
             playerPocketCards.put(player, new PreflopCards(card));
         }
         iterator = playerIterator();
@@ -57,6 +62,9 @@ public class HandSetting {
             Player player = iterator.next();
             Card card = cardDeck.nextCard();
             player.secondCardIs(card);
+            for (PlayerObserver playerObserver : gameSetting.getObservers(player)) {
+                playerObserver.secondCardIs(player, card);
+            }
             playerPocketCards.get(player).setCard2(card);
         }
     }

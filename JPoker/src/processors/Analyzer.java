@@ -17,7 +17,6 @@ import java.util.List;
  * To change this template use File | Settings | File Templates.
  */
 public class Analyzer implements Notifiable {
-    private List<ShowDown> allShowDowns = new ArrayList<ShowDown>();
     private LinkedHashMap<PokerEvent, EventStat> pokerEventStats;
     private List<PokerEvent> analysisEvents;
 
@@ -54,10 +53,6 @@ public class Analyzer implements Notifiable {
 
     }
 
-    public void showDown(ShowDown showDown) {
-        allShowDowns.add(showDown);
-    }
-
     public void gameEnds() {
 
     }
@@ -79,12 +74,12 @@ public class Analyzer implements Notifiable {
         for (PokerEvent pokerEvent : analysisEvents) {
             pokerEventStats.put(pokerEvent, new EventStat());
         }
-        for (ShowDown showDown : allShowDowns) {
-            for (PokerEvent pokerEvent : analysisEvents) {
-                EventStat stat = pokerEventStats.get(pokerEvent);
-                pokerEvent.modifyYourStats(stat, showDown);
-            }
-        }
+//        for (ShowDown showDown : allShowDowns) {
+//            for (PokerEvent pokerEvent : analysisEvents) {
+//                EventStat stat = pokerEventStats.get(pokerEvent);
+//                pokerEvent.modifyYourStats(stat, showDown);
+//            }
+//        }
     }
 
     public String getStatsAsString() {

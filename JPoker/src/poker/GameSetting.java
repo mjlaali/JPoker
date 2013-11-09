@@ -1,6 +1,7 @@
 package poker;
 
 import players.Player;
+import players.PlayerObserver;
 
 import java.util.*;
 
@@ -12,6 +13,7 @@ public class GameSetting {
     private double smallBlind;
     private double bigBlind;
     private List<Player> players = new ArrayList<Player>();
+    private Map<Player, List<PlayerObserver>> playerObservers = new HashMap<Player, List<PlayerObserver>>();
     private Map<Player, Double> playerStacks = new HashMap<Player, Double>();
 
     public GameSetting(double smallBlind, double bigBlind) {
@@ -31,9 +33,14 @@ public class GameSetting {
         return players;
     }
 
-    public void addPlayerStack(Player player, double stack) {
+    public List<PlayerObserver> getObservers(Player player) {
+        return playerObservers.get(player);
+    }
+
+    public void addPlayerStack(Player player, double stack, List<PlayerObserver> observers) {
         players.add(player);
         playerStacks.put(player, stack);
+        playerObservers.put(player, observers);
     }
 
     public int getIndex(Player player) {

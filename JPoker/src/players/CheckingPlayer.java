@@ -11,14 +11,19 @@ import java.util.List;
 public class CheckingPlayer extends Player {
     private double latestBet;
 
-    public CheckingPlayer(String id, List<PlayerObserver> playerObservers) {
-        super(id, playerObservers);
+    public CheckingPlayer(String id) {
+        super(id);
     }
 
     public void newHand(GameSetting gameSetting) {
     }
 
-    public void preflopIs(Card card1, Card card2) {
+    @Override
+    public void firstCardIs(Card card) {
+    }
+
+    @Override
+    public void secondCardIs(Card card) {
         latestBet = 0;
     }
 

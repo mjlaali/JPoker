@@ -1,9 +1,8 @@
 package events;
 
 import poker.Card;
+import poker.HandType;
 import poker.PreflopCards;
-import poker.ShowDown;
-import poker.ShowDownElement;
 
 /**
  * Created by IntelliJ IDEA.
@@ -23,23 +22,23 @@ public class PreflopHeadToHeadEvent extends PokerEvent {
         this.mindSuit = mindSuit;
     }
 
-    public void modifyYourStats(EventStat stat, ShowDown showDown) {
-        for (ShowDownElement showDownElement1 : showDown.getElements()) {
-            Card[] cards1 = showDownElement1.getHandType().getPreflopCards();
-            if (preflopCards1.equals(new PreflopCards(cards1[0], cards1[1]), mindSuit)) {
-                for (ShowDownElement showDownElement2 : showDown.getElements()) {
-                    if (showDownElement1 != showDownElement2) {
-                        Card[] cards2 = showDownElement2.getHandType().getPreflopCards();
-                        if (preflopCards2.equals(new PreflopCards(cards2[0], cards2[1]), mindSuit)) {
-                            if (showDownElement1.getHandType().compareTo(showDownElement2.getHandType()) > 0) {
-                                stat.count++;
-                            }
-                            stat.total++;
-                        }
-                    }
-                }
-            }
-        }
+    public void modifyYourStats(EventStat stat, HandType handType) {
+//        for (ShowDownElement showDownElement1 : showDown.getElements()) {
+//            Card[] cards1 = showDownElement1.getHandType().getPreflopCards();
+//            if (preflopCards1.equals(new PreflopCards(cards1[0], cards1[1]), mindSuit)) {
+//                for (ShowDownElement showDownElement2 : showDown.getElements()) {
+//                    if (showDownElement1 != showDownElement2) {
+//                        Card[] cards2 = showDownElement2.getHandType().getPreflopCards();
+//                        if (preflopCards2.equals(new PreflopCards(cards2[0], cards2[1]), mindSuit)) {
+//                            if (showDownElement1.getHandType().compareTo(showDownElement2.getHandType()) > 0) {
+//                                stat.count++;
+//                            }
+//                            stat.total++;
+//                        }
+//                    }
+//                }
+//            }
+//        }
     }
 
     public String getName() {

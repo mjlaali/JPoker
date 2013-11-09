@@ -1,12 +1,8 @@
 package processors.preflop;
 
 import java.io.PrintStream;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.TreeMap;
 
 import players.CheckingPlayer;
 import players.Player;
@@ -105,7 +101,7 @@ public class PreflopAnalyzer implements Notifiable {
 		PreflopAnalyzer preflopAnalyzer = new PreflopAnalyzer();
 		GameSetting gameSetting = new GameSetting(1, 2);
         for (int i = 0; i < 2; i++) {
-            gameSetting.addPlayerStack(new CheckingPlayer("Player " + (i + 1), new LinkedList<PlayerObserver>()), 10000);
+            gameSetting.addPlayerStack(new CheckingPlayer("Player " + (i + 1)), 10000, new ArrayList<PlayerObserver>());
         }
         LinkedList<Notifiable> externalNotifiables = new LinkedList<Notifiable>();
         externalNotifiables.add(preflopAnalyzer);

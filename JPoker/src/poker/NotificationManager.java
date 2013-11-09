@@ -76,11 +76,6 @@ public class NotificationManager extends Thread implements Notifiable, PlayerObs
         addNotification(notification);
     }
 
-    public void showDown(ShowDown showDown) {
-        Notification notification = new Notification("showDown", new Object[]{showDown});
-        addNotification(notification);
-    }
-
     public void gameEnds() {
         Notification notification = new Notification("gameEnds", new Object[]{});
         addNotification(notification);

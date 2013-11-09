@@ -35,7 +35,7 @@ public class StaticSettingDecider implements SettingDecider {
         List<PlayerObserver> playerObservers = new ArrayList<PlayerObserver>();
         playerObservers.add(manager);
         for (int i = 0; i < 8; i++) {
-            gameSetting.addPlayerStack(new CheckingPlayer("Player " + ((i + 1) * 111), playerObservers), 10000);
+            gameSetting.addPlayerStack(new CheckingPlayer("Player " + ((i + 1) * 111)), 10000, playerObservers);
         }
         return gameSetting;
     }

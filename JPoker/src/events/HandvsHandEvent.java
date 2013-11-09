@@ -1,8 +1,7 @@
 package events;
 
+import poker.HandType;
 import poker.PokerHandType;
-import poker.ShowDown;
-import poker.ShowDownElement;
 
 /**
  * Created by IntelliJ IDEA.
@@ -20,17 +19,17 @@ public class HandvsHandEvent extends PokerEvent {
         this.type2 = type2;
     }
 
-    public void modifyYourStats(EventStat stat, ShowDown showDown) {
-        for (ShowDownElement showDownElement1 : showDown.getElements()) {
-            for (ShowDownElement showDownElement2 : showDown.getElements()) {
-                if (showDownElement1 != showDownElement2) {
-                    if (showDownElement1.getHandType().getType() == type1 && showDownElement2.getHandType().getType() == type2) {
-                        stat.count++;
-                    }
-                    stat.total++;
-                }
-            }
-        }
+    public void modifyYourStats(EventStat stat, HandType handType) {
+//        for (ShowDownElement showDownElement1 : showDown.getElements()) {
+//            for (ShowDownElement showDownElement2 : showDown.getElements()) {
+//                if (showDownElement1 != showDownElement2) {
+//                    if (showDownElement1.getHandType().getType() == type1 && showDownElement2.getHandType().getType() == type2) {
+//                        stat.count++;
+//                    }
+//                    stat.total++;
+//                }
+//            }
+//        }
     }
 
     public String getName() {

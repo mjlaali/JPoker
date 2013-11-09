@@ -11,9 +11,9 @@ public interface Notifiable {
     public void flopIs(Card flopCard1, Card flopCard2, Card flopCard3);
     public void turnIs(Card card);
     public void riverIs(Card card);
-    public void handle(Action action);
-    public void gameEnds();
     public void cardsShown(Player player, HandType handType);
     public void cardsMucked(Player player);
     public void potWon(Iterable<Player> potWinners, double eachValue);
+    public void handle(Action action);
+    public void gameEnds();
 }
