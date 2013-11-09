@@ -33,6 +33,17 @@ public class GameSetting implements GameInfo {
         return players;
     }
 
+    @Override
+    public List<Player> getPlayersWithNonZeroStack() {
+        List<Player> players = new ArrayList<>();
+        for (Player player : getPlayers()) {
+            if (getStackSize(player) > 0) {
+                players.add(player);
+            }
+        }
+        return players;
+    }
+
     public List<PlayerObserver> getObservers(Player player) {
         return playerObservers.get(player);
     }

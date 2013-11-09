@@ -40,7 +40,7 @@ public class GraphicsUserInterface extends JFrame implements UserInterface, Play
         this.currentGame = handInfo.getGameInfo();
         List<Player> players = currentGame.getPlayers();
         if (UICoords.playerX1s.length < players.size()) {
-            throw new RuntimeException("At most " + UICoords.playerX1s.length + " startingPlayers are supported by this UI");
+            throw new RuntimeException("At most " + UICoords.playerX1s.length + " getStartingPlayers are supported by this UI");
         }
         boardPanel.removeAll();
         int i = 0;

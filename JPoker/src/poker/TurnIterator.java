@@ -16,7 +16,7 @@ public class TurnIterator {
 
     public TurnIterator(HandSetting handSetting) {
         int index = 0;
-        for (Player player : handSetting.startingPlayers()) {
+        for (Player player : handSetting.getStartingPlayers()) {
             if (handSetting.getGameSetting().getStackSize(player) == 0)
                 foldOrAllInPlayerIndices.add(index);
             playersWithStack.add(player);

@@ -11,7 +11,7 @@ import java.util.*;
  * Date: Mar 1, 2012
  */
 public class HandSetting implements HandInfo {
-	//The setting of current game and startingPlayers
+	//The setting of current game and getStartingPlayers
     private GameSetting gameSetting;
     private int smallBlindIndex;
     //The deck of cards
@@ -45,7 +45,7 @@ public class HandSetting implements HandInfo {
 
     public void dealPreFlop() throws OutOfCardsException {
         playerPocketCards = new LinkedHashMap<Player, PreflopCards>();
-        List<Player> startingPlayers = startingPlayers();
+        List<Player> startingPlayers = getStartingPlayers();
         for (Player player : startingPlayers) {
             Card card = cardDeck.nextCard();
             player.firstCardIs(card);
@@ -97,9 +97,9 @@ public class HandSetting implements HandInfo {
     }
 
     @Override
-    public List<Player> startingPlayers() {
+    public List<Player> getStartingPlayers() {
         ArrayList<Player> players = new ArrayList<>();
-        List<Player> gamePlayers = gameSetting.getPlayers();
+        List<Player> gamePlayers = gameSetting.getPlayersWithNonZeroStack();
         players.addAll(gamePlayers.subList(smallBlindIndex, gamePlayers.size()));
         if (smallBlindIndex > 0)
             players.addAll(gamePlayers.subList(0, smallBlindIndex));

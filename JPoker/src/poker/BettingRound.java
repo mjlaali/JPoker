@@ -10,7 +10,7 @@ import java.util.LinkedList;
  */
 public class BettingRound {
     private HandSetting handSetting;
-    //Iterator over startingPlayers showing who's turn it is
+    //Iterator over getStartingPlayers showing who's turn it is
     private TurnIterator turnIterator;
     private LinkedList<Action> actions = new LinkedList<Action>();
     private Action lastBoardRaise = null;

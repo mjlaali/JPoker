@@ -12,10 +12,10 @@ public interface HandInfo {
     public GameInfo getGameInfo();
 
     /*
-        Returns an list of startingPlayers who started the hand (including the ones that may have folded by now) starting
+        Returns an list of getStartingPlayers who started the hand (including the ones that may have folded by now) starting
         from small blind
      */
-    public List<Player> startingPlayers();
+    public List<Player> getStartingPlayers();
 
     public Player getSmallBlindPlayer();
 
