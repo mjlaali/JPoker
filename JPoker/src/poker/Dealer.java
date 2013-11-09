@@ -115,7 +115,7 @@ public class Dealer {
         for (Player player : potWinners) {
             gameSetting.increaseStack(player, eachShare);
         }
-        notifier.announceWin(potWinners, pot.getValue());
+        notifier.announceWin(potWinners, eachShare);
     }
 
     private List<Player> chooseWinners(List<Player> playersInvolved, Map<Player, HandType> playerHandTypes) {
@@ -189,9 +189,9 @@ public class Dealer {
             }
         }
 
-        public void announceWin(List<Player> potWinners, double potValue) {
+        public void announceWin(List<Player> potWinners, double eachShare) {
             for (Notifiable notifiable : notifiables) {
-                notifiable.potWon(potWinners, potValue);
+                notifiable.potWon(potWinners, eachShare);
             }
         }
     }
