@@ -41,14 +41,14 @@ public class Pot {
     }
 
     /*
-    Returns those players who went allin in this pot
+    Returns those startingPlayers who went allin in this pot
      */
     public List<Player> getAttachedPlayers() {
         return attachedPlayers;
     }
 
     /*
-    Returns players involved in pots sorted based on who should show first (side pot players show first and then the last
+    Returns startingPlayers involved in pots sorted based on who should show first (side pot startingPlayers show first and then the last
     raiser is the first to show)
      */
     public List<Player> getPlayersInvolved() {

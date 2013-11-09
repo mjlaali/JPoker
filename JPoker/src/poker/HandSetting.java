@@ -4,21 +4,19 @@ import exceptions.OutOfCardsException;
 import players.Player;
 import players.PlayerObserver;
 
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * User: Sina
  * Date: Mar 1, 2012
  */
 public class HandSetting implements HandInfo {
-	//The setting of current game and players
+	//The setting of current game and startingPlayers
     private GameSetting gameSetting;
     private int smallBlindIndex;
     //The deck of cards
     private CardDeck cardDeck = new CardDeck();
-    private Map<Player, PreflopCards> playerPocketCards;
+    private LinkedHashMap<Player, PreflopCards> playerPocketCards;
     //Shared card in the board
     private BoardCards boardCards;
     private Pot pot;
@@ -47,9 +45,8 @@ public class HandSetting implements HandInfo {
 
     public void dealPreFlop() throws OutOfCardsException {
         playerPocketCards = new LinkedHashMap<Player, PreflopCards>();
-        Iterator<Player> iterator = playerIterator();
-        while (iterator.hasNext()) {
-            Player player = iterator.next();
+        List<Player> startingPlayers = startingPlayers();
+        for (Player player : startingPlayers) {
             Card card = cardDeck.nextCard();
             player.firstCardIs(card);
             for (PlayerObserver playerObserver : gameSetting.getObservers(player)) {
@@ -57,9 +54,7 @@ public class HandSetting implements HandInfo {
             }
             playerPocketCards.put(player, new PreflopCards(card));
         }
-        iterator = playerIterator();
-        while (iterator.hasNext()) {
-            Player player = iterator.next();
+        for (Player player : startingPlayers) {
             Card card = cardDeck.nextCard();
             player.secondCardIs(card);
             for (PlayerObserver playerObserver : gameSetting.getObservers(player)) {
@@ -101,35 +96,14 @@ public class HandSetting implements HandInfo {
         return gameSetting;
     }
 
-    public Iterator<Player> playerIterator() {
-        return new Iterator<Player>() {
-            private int index = smallBlindIndex;
-            boolean done = false;
-
-            @Override
-            public boolean hasNext() {
-                return !done;
-            }
-
-            @Override
-            public Player next() {
-                Player player = gameSetting.getPlayers().get(index);
-                index = (index + 1) % gameSetting.getPlayers().size();
-                if (index == smallBlindIndex) {
-                    done = true;
-                }
-                return player;
-            }
-
-            @Override
-            public void remove() {
-            }
-        };
-    }
-
     @Override
-    public Iterator<Player> inPotPlayerIterator() {
-        return playerPocketCards.keySet().iterator();
+    public List<Player> startingPlayers() {
+        ArrayList<Player> players = new ArrayList<>();
+        List<Player> gamePlayers = gameSetting.getPlayers();
+        players.addAll(gamePlayers.subList(smallBlindIndex, gamePlayers.size()));
+        if (smallBlindIndex > 0)
+            players.addAll(gamePlayers.subList(0, smallBlindIndex));
+        return players;
     }
 
     @Override

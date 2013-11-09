@@ -14,15 +14,15 @@ public class TurnIterator {
     private int currentIndex;
     private List<Integer> foldOrAllInPlayerIndices = new ArrayList<Integer>();
 
-    public TurnIterator(GameSetting gameSetting, int startingSmallBlindIndex) {
+    public TurnIterator(HandSetting handSetting) {
         int index = 0;
-        for (Player player : gameSetting.getPlayers()) {
-            if (gameSetting.getStackSize(player) == 0)
+        for (Player player : handSetting.startingPlayers()) {
+            if (handSetting.getGameSetting().getStackSize(player) == 0)
                 foldOrAllInPlayerIndices.add(index);
             playersWithStack.add(player);
             index++;
         }
-        currentIndex = startingSmallBlindIndex;
+        currentIndex = 0;
         passFoldedPlayers();
     }
 

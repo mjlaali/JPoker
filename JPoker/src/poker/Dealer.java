@@ -82,7 +82,7 @@ public class Dealer {
     }
 
     public void showDown(HandSetting handSetting) {
-        // Create a map of players who decide to show their hands with the hand type they have
+        // Create a map of startingPlayers who decide to show their hands with the hand type they have
         Map<Player, HandType> playerHandTypes = new HashMap<Player, HandType>();
         Pot pot = handSetting.getPot();
         Iterator<Player> iterator = pot.playerIterator();

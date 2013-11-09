@@ -13,7 +13,7 @@ public class CheckingPlayer extends Player {
         super(id);
     }
 
-    public void newHand(HandSetting handSetting) {
+    public void newHand(HandInfo handInfo) {
     }
 
     @Override

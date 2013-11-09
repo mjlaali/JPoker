@@ -19,8 +19,7 @@ import java.util.Map;
 public class GraphicsUserInterface extends JFrame implements UserInterface, PlayerObserver {
     private Map<Player, PlayerPanel> playerPanels = new HashMap<Player, PlayerPanel>();
     private ImagePanel boardPanel;
-    private GameSetting currentGame;
-    private HandSetting currentHand;
+    private GameInfo currentGame;
     private ActionPanel latestActionPanel;
 
     public GraphicsUserInterface() throws HeadlessException {
@@ -37,12 +36,11 @@ public class GraphicsUserInterface extends JFrame implements UserInterface, Play
         getContentPane().add(boardPanel);
     }
 
-    public void newHand(HandSetting handSetting) {
-        this.currentGame = handSetting.getGameSetting();
-        this.currentHand = handSetting;
+    public void newHand(HandInfo handInfo) {
+        this.currentGame = handInfo.getGameInfo();
         List<Player> players = currentGame.getPlayers();
         if (UICoords.playerX1s.length < players.size()) {
-            throw new RuntimeException("At most " + UICoords.playerX1s.length + " players are supported by this UI");
+            throw new RuntimeException("At most " + UICoords.playerX1s.length + " startingPlayers are supported by this UI");
         }
         boardPanel.removeAll();
         int i = 0;

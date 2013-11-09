@@ -7,7 +7,7 @@ import players.Player;
  * Date: Mar 1, 2012
  */
 public interface Notifiable {
-    public void newHand(HandSetting handSetting);
+    public void newHand(HandInfo handInfo);
     public void flopIs(Card flopCard1, Card flopCard2, Card flopCard3);
     public void turnIs(Card card);
     public void riverIs(Card card);

@@ -1,6 +1,7 @@
 package ui.panels;
 
 import players.Player;
+import poker.GameInfo;
 import poker.GameSetting;
 
 import javax.swing.*;
@@ -16,9 +17,9 @@ import java.awt.*;
 public class InfoPanel extends JPanel {
     public static int panelWidth = 55, panelHeight = 27;
     private Player player;
-    private GameSetting currentGame;
+    private GameInfo currentGame;
 
-    public InfoPanel(Player player, GameSetting currentGame) {
+    public InfoPanel(Player player, GameInfo currentGame) {
         setSize(100, 50);
         this.player = player;
         this.currentGame = currentGame;

@@ -10,14 +10,14 @@ import java.util.LinkedList;
  */
 public class BettingRound {
     private HandSetting handSetting;
-    //Iterator over players showing who's turn it is
+    //Iterator over startingPlayers showing who's turn it is
     private TurnIterator turnIterator;
     private LinkedList<Action> actions = new LinkedList<Action>();
     private Action lastBoardRaise = null;
 
     public BettingRound(HandSetting handSetting) {
         this.handSetting = handSetting;
-        turnIterator = new TurnIterator(handSetting.getGameSetting(), handSetting.getSmallBlindIndex());
+        turnIterator = new TurnIterator(handSetting);
     }
 
     public boolean finished() {
