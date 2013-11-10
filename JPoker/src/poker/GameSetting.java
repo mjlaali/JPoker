@@ -12,9 +12,9 @@ import java.util.*;
 public class GameSetting implements GameInfo {
     private double smallBlind;
     private double bigBlind;
-    private List<Player> players = new ArrayList<Player>();
-    private Map<Player, List<PlayerObserver>> playerObservers = new HashMap<Player, List<PlayerObserver>>();
-    private Map<Player, Double> playerStacks = new HashMap<Player, Double>();
+    private List<Player> players = new ArrayList<>();
+    private Map<Player, List<PlayerObserver>> playerObservers = new HashMap<>();
+    private Map<Player, Double> playerStacks = new HashMap<>();
 
     public GameSetting(double smallBlind, double bigBlind) {
         this.bigBlind = bigBlind;
@@ -62,6 +62,29 @@ public class GameSetting implements GameInfo {
             index++;
         }
         return -1;
+    }
+
+
+    public int getActiveRight(int index) {
+        int size = players.size();
+        int rightIndex = index;
+        Player playerToRight;
+        do {
+            rightIndex = (rightIndex + size - 1) % size;
+            playerToRight = players.get(rightIndex);
+        } while (getStackSize(playerToRight) == 0);
+        return rightIndex;
+    }
+
+    public int getActiveLeft(int index) {
+        int size = players.size();
+        int leftIndex = index;
+        Player playerToLeft;
+        do {
+            leftIndex = (leftIndex + 1) % size;
+            playerToLeft = players.get(leftIndex);
+        } while (getStackSize(playerToLeft) == 0);
+        return leftIndex;
     }
 
     public Double getStackSize(Player player) {

@@ -14,21 +14,23 @@ public class HandSetting implements HandInfo {
 	//The setting of current game and getStartingPlayers
     private GameSetting gameSetting;
     private int smallBlindIndex;
+    private int bigBlindIndex;
+    private int dealerIndex;
     //The deck of cards
     private CardDeck cardDeck = new CardDeck();
     private LinkedHashMap<Player, PreflopCards> playerPocketCards;
+    private List<Player> startingPlayers;
     //Shared card in the board
     private BoardCards boardCards;
     private Pot pot;
 
-    public HandSetting(GameSetting gameSetting, int smallBlindIndex) {
+    public HandSetting(GameSetting gameSetting, int smallBlindIndex, int bigBlindIndex, int dealerIndex) {
         this.gameSetting = gameSetting;
         this.smallBlindIndex = smallBlindIndex;
+        this.bigBlindIndex = bigBlindIndex;
+        this.dealerIndex = dealerIndex;
+        startingPlayers = getActivePlayers();
         pot = new Pot();
-    }
-
-    public int getSmallBlindIndex() {
-        return smallBlindIndex;
     }
 
     public GameSetting getGameSetting() {
@@ -44,7 +46,7 @@ public class HandSetting implements HandInfo {
     }
 
     public void dealPreFlop() throws OutOfCardsException {
-        playerPocketCards = new LinkedHashMap<Player, PreflopCards>();
+        playerPocketCards = new LinkedHashMap<>();
         List<Player> startingPlayers = getStartingPlayers();
         for (Player player : startingPlayers) {
             Card card = cardDeck.nextCard();
@@ -97,13 +99,20 @@ public class HandSetting implements HandInfo {
     }
 
     @Override
-    public List<Player> getStartingPlayers() {
+    public List<Player> getActivePlayers() {
         ArrayList<Player> players = new ArrayList<>();
-        List<Player> gamePlayers = gameSetting.getPlayersWithNonZeroStack();
-        players.addAll(gamePlayers.subList(smallBlindIndex, gamePlayers.size()));
+        List<Player> allPlayers = gameSetting.getPlayers();
+        List<Player> activePlayers = gameSetting.getPlayersWithNonZeroStack();
+        players.addAll(allPlayers.subList(smallBlindIndex, allPlayers.size()));
         if (smallBlindIndex > 0)
-            players.addAll(gamePlayers.subList(0, smallBlindIndex));
+            players.addAll(allPlayers.subList(0, smallBlindIndex));
+        players.retainAll(activePlayers);
         return players;
+    }
+
+    @Override
+    public List<Player> getStartingPlayers() {
+        return startingPlayers;
     }
 
     @Override
@@ -113,14 +122,11 @@ public class HandSetting implements HandInfo {
 
     @Override
     public Player getBigBlindPlayer() {
-        int index = (smallBlindIndex + 1) % gameSetting.getPlayers().size();
-        return gameSetting.getPlayers().get(index);
+        return gameSetting.getPlayers().get(bigBlindIndex);
     }
 
     @Override
     public Player getDealer() {
-        int size = gameSetting.getPlayers().size();
-        int index = (smallBlindIndex + size - 1) % size;
-        return gameSetting.getPlayers().get(index);
+        return gameSetting.getPlayers().get(dealerIndex);
     }
 }

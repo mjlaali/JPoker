@@ -5,6 +5,8 @@ import players.PlayerObserver;
 import poker.*;
 import poker.Action;
 import ui.panels.*;
+import ui.shapes.*;
+import ui.shapes.Rectangle;
 
 import javax.swing.*;
 import java.awt.*;
@@ -17,10 +19,11 @@ import java.util.Map;
  * Date: Mar 4, 2012
  */
 public class GraphicsUserInterface extends JFrame implements UserInterface, PlayerObserver {
-    private Map<Player, PlayerPanel> playerPanels = new HashMap<Player, PlayerPanel>();
+    private Map<Player, PlayerPanel> playerPanels = new HashMap<>();
     private ImagePanel boardPanel;
     private GameInfo currentGame;
     private ActionPanel latestActionPanel;
+    private HandInfo thisHand;
 
     public GraphicsUserInterface() throws HeadlessException {
         super("Poker AI");
@@ -38,27 +41,59 @@ public class GraphicsUserInterface extends JFrame implements UserInterface, Play
 
     public void newHand(HandInfo handInfo) {
         this.currentGame = handInfo.getGameInfo();
+        this.thisHand = handInfo;
         List<Player> players = currentGame.getPlayers();
-        if (UICoords.playerX1s.length < players.size()) {
-            throw new RuntimeException("At most " + UICoords.playerX1s.length + " getStartingPlayers are supported by this UI");
+        if (UICoords.playerPositions.length < players.size()) {
+            throw new RuntimeException("At most " + UICoords.playerPositions.length + " getStartingPlayers are supported by this UI");
         }
         boardPanel.removeAll();
+        addDealerButton();
         int i = 0;
         for (Player player : players) {
             InfoPanel infoPanel = new InfoPanel(player, currentGame);
             boardPanel.add(infoPanel);
-            int y = UICoords.playerY1s[i];
-            y = (y > getHeight() / 2) ? (y + 80) : y - 35;
-            infoPanel.setBounds(UICoords.playerX1s[i] + 5, y, InfoPanel.panelWidth, InfoPanel.panelHeight);
+            Position p = UICoords.playerPositions[i];
+            int y = (p.y > getHeight() / 2) ? (p.y + 80) : p.y - 35;
+            infoPanel.setBounds(p.x + 5, y, InfoPanel.panelWidth, InfoPanel.panelHeight);
 
             PlayerPanel playerPanel = new PlayerPanel(player, infoPanel);
             playerPanels.put(player, playerPanel);
             boardPanel.add(playerPanel);
-            playerPanel.setBounds(UICoords.playerX1s[i], UICoords.playerY1s[i], PlayerPanel.panelWidth, PlayerPanel.panelHeight);
+            playerPanel.setBounds(p.x, p.y, PlayerPanel.panelWidth, PlayerPanel.panelHeight);
 
             i++;
         }
         repaint();
+    }
+
+    private void addDealerButton() {
+        ImagePanel dealerButtonPanel = new ImagePanel("images/DealerButton.jpg");
+        Rectangle bounds = locateDealerButton(thisHand.getDealer());
+        dealerButtonPanel.setBounds(bounds.topLeft.x, bounds.topLeft.y, bounds.width, bounds.height);
+        boardPanel.add(dealerButtonPanel);
+        dealerButtonPanel.repaint();
+    }
+
+    private Rectangle locateDealerButton(Player dealer) {
+        Rectangle apBounds = locateActionPanelBounds(dealer);
+        Position center;
+        int index = currentGame.getIndex(dealer);
+        if (index == 0) {
+            center = apBounds.topLeft(-10, 18);
+        } else if (index == 1) {
+            center = apBounds.bottomLeft(-10, 18);
+        } else if (index == 2 || index == 3) {
+            center = apBounds.topRight(17, -15);
+        } else if (index == 4) {
+            center = apBounds.bottomRight(-10, 18);
+        } else if (index == 5) {
+            center = apBounds.topRight(-10, 18);
+        } else /* if (index == 6 || index == 7) */ {
+            center = apBounds.bottomLeft(17, -15);
+        }
+        Position topLeft = center.distance(-8, -8);
+        return new Rectangle(topLeft, 16, 16);
+
     }
 
     private String constructPath(Card card) {
@@ -68,17 +103,17 @@ public class GraphicsUserInterface extends JFrame implements UserInterface, Play
     public void flopIs(Card flopCard1, Card flopCard2, Card flopCard3) {
         hideLatestAction(true);
         ImagePanel flop1ImagePanel = new ImagePanel(constructPath(flopCard1));
-        flop1ImagePanel.setBounds(UICoords.flop1X, UICoords.flop1Y, UICoords.cardWidth, UICoords.cardHeight);
+        flop1ImagePanel.setBounds(UICoords.flop1X, UICoords.flop1Y, PlayerPanel.cardWidth, PlayerPanel.cardHeight);
         boardPanel.add(flop1ImagePanel);
         flop1ImagePanel.repaint();
         delay(200);
         ImagePanel flop2ImagePanel = new ImagePanel(constructPath(flopCard2));
-        flop2ImagePanel.setBounds(UICoords.flop2X, UICoords.flop2Y, UICoords.cardWidth, UICoords.cardHeight);
+        flop2ImagePanel.setBounds(UICoords.flop2X, UICoords.flop2Y, PlayerPanel.cardWidth, PlayerPanel.cardHeight);
         boardPanel.add(flop2ImagePanel);
         flop2ImagePanel.repaint();
         delay(100);
         ImagePanel flop3ImagePanel = new ImagePanel(constructPath(flopCard3));
-        flop3ImagePanel.setBounds(UICoords.flop3X, UICoords.flop3Y, UICoords.cardWidth, UICoords.cardHeight);
+        flop3ImagePanel.setBounds(UICoords.flop3X, UICoords.flop3Y, PlayerPanel.cardWidth, PlayerPanel.cardHeight);
         boardPanel.add(flop3ImagePanel);
         flop3ImagePanel.repaint();
         delay(100);
@@ -87,7 +122,7 @@ public class GraphicsUserInterface extends JFrame implements UserInterface, Play
     public void turnIs(Card card) {
         hideLatestAction(true);
         ImagePanel turnImagePanel = new ImagePanel(constructPath(card));
-        turnImagePanel.setBounds(UICoords.turnX, UICoords.turnY, UICoords.cardWidth, UICoords.cardHeight);
+        turnImagePanel.setBounds(UICoords.turnX, UICoords.turnY, PlayerPanel.cardWidth, PlayerPanel.cardHeight);
         boardPanel.add(turnImagePanel);
         turnImagePanel.repaint();
         delay(200);
@@ -96,7 +131,7 @@ public class GraphicsUserInterface extends JFrame implements UserInterface, Play
     public void riverIs(Card card) {
         hideLatestAction(true);
         ImagePanel riverImagePanel = new ImagePanel(constructPath(card));
-        riverImagePanel.setBounds(UICoords.riverX, UICoords.riverY, UICoords.cardWidth, UICoords.cardHeight);
+        riverImagePanel.setBounds(UICoords.riverX, UICoords.riverY, PlayerPanel.cardWidth, PlayerPanel.cardHeight);
         boardPanel.add(riverImagePanel);
         riverImagePanel.repaint();
         delay(200);
@@ -107,33 +142,29 @@ public class GraphicsUserInterface extends JFrame implements UserInterface, Play
         hideLatestAction(false);
         latestActionPanel = new BetActionPanel(action.getBet());
         boardPanel.add(latestActionPanel);
-        locateActionPanelBounds(action.getPlayer(), latestActionPanel);
+        Rectangle r = locateActionPanelBounds(action.getPlayer());
+        latestActionPanel.setBounds(r.topLeft.x, r.topLeft.y, r.width, r.height);
         repaint();
         delay(400);
     }
 
-    private void locateActionPanelBounds(Player player, ActionPanel actionPanel) {
+    private Rectangle locateActionPanelBounds(Player player) {
         int index = currentGame.getIndex(player);
-        int x = UICoords.playerX1s[index];
-        int y = UICoords.playerY1s[index];
+        Rectangle rect = new Rectangle(UICoords.playerPositions[index], PlayerPanel.panelWidth, PlayerPanel.panelHeight);
+        Position p = null;
         if (index == 0 || index == 1) {
-            x = x + PlayerPanel.panelWidth + 13;
-            y = y + 25;
+            p = rect.topRight(13, -25);
         }
         if (index == 2 || index == 3) {
-            x = x + 5;
-            y = y + PlayerPanel.panelHeight + 11;
+            p = rect.bottomLeft(-5, 11);
         }
         if (index == 4 || index == 5) {
-            x = x - ActionPanel.panelWidth - 13;
-            y = y + 25;
+            p = rect.topLeft(13 + ActionPanel.panelWidth, -25);
         }
         if (index == 6 || index == 7) {
-            x = x + 5;
-            y = y - ActionPanel.panelHeight - 11;
+            p = rect.topLeft(-5, 11 + ActionPanel.panelHeight);
         }
-
-        actionPanel.setBounds(x, y, ActionPanel.panelWidth, ActionPanel.panelHeight);
+        return new Rectangle(p, ActionPanel.panelWidth, ActionPanel.panelHeight);
     }
 
     private void hideLatestAction(boolean repaint) {
@@ -163,11 +194,12 @@ public class GraphicsUserInterface extends JFrame implements UserInterface, Play
         for (Player player : potWinners) {
             ShowDownPanel showDownPanel = new ShowDownPanel(player, eachValue);
             boardPanel.add(showDownPanel);
-            locateActionPanelBounds(player, showDownPanel);
+            Rectangle r = locateActionPanelBounds(player);
+            showDownPanel.setBounds(r.topLeft.x, r.topLeft.y, r.width, r.height);
             repaint();
-            delay(400);
+            delay(1000);
         }
-        delay(2000);
+        delay(4500);
     }
 
     public void firstCardIs(Player player, Card card) {

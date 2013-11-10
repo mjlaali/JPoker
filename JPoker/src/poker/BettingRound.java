@@ -12,7 +12,7 @@ public class BettingRound {
     private HandSetting handSetting;
     //Iterator over getStartingPlayers showing who's turn it is
     private TurnIterator turnIterator;
-    private LinkedList<Action> actions = new LinkedList<Action>();
+    private LinkedList<Action> actions = new LinkedList<>();
     private Action lastBoardRaise = null;
 
     public BettingRound(HandSetting handSetting) {
@@ -27,7 +27,7 @@ public class BettingRound {
             return turnIterator.getRemainingCount() == 1;
         for (Action action : actions) {
             if (action.getPlayer() == turnIterator.current()) {
-                return lastBoardRaise.getBet() == action.getBet();
+                return !action.isBlind() && lastBoardRaise.getBet() == action.getBet();
             }
         }
         return false;
@@ -50,6 +50,14 @@ public class BettingRound {
         return newAction;
     }
 
+    public BlindAction blindBet(double amount) {
+        Player player = turnIterator.current();
+        BlindAction blindAction = new BlindAction(player, amount);
+        actions.add(blindAction);
+        lastBoardRaise = blindAction;
+        return blindAction;
+    }
+
     private Action findLastAction(Player player) {
         for (Action action : actions) {
             if (action.getPlayer() == player) {
@@ -57,10 +65,6 @@ public class BettingRound {
             }
         }
         return null;
-    }
-
-    public LinkedList<Action> getActions() {
-        return actions;
     }
 
     public Action getLastBoardRaise() {
@@ -75,6 +79,10 @@ public class BettingRound {
             }
         }
         return lowestAllInAmount;
+    }
+
+    public void moveTurn() {
+        turnIterator.moveTurn();
     }
 
     public void terminate() {

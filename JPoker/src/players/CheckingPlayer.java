@@ -8,12 +8,14 @@ import poker.*;
  */
 public class CheckingPlayer extends Player {
     private double latestBet;
+    private HandInfo handInfo;
 
     public CheckingPlayer(String id) {
         super(id);
     }
 
     public void newHand(HandInfo handInfo) {
+        this.handInfo = handInfo;
     }
 
     @Override
@@ -22,19 +24,19 @@ public class CheckingPlayer extends Player {
 
     @Override
     public void secondCardIs(Card card) {
-        latestBet = 0;
+        latestBet = handInfo.getGameInfo().getBigBlind();
     }
 
     public void flopIs(Card flopCard1, Card flopCard2, Card flopCard3) {
-        latestBet = 4500;
+        latestBet = 2000;
     }
 
     public void turnIs(Card card) {
-        latestBet = 1000;
+        latestBet = 0;
     }
 
     public void riverIs(Card card) {
-        latestBet = 0;
+        latestBet = 3000;
     }
 
     public void handle(Action action) {

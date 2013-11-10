@@ -10,9 +10,9 @@ import java.util.List;
  * Date: Feb 29, 2012
  */
 public class TurnIterator {
-    private List<Player> playersWithStack = new ArrayList<Player>();
+    private List<Player> playersWithStack = new ArrayList<>();
     private int currentIndex;
-    private List<Integer> foldOrAllInPlayerIndices = new ArrayList<Integer>();
+    private List<Integer> foldOrAllInPlayerIndices = new ArrayList<>();
 
     public TurnIterator(HandSetting handSetting) {
         int index = 0;

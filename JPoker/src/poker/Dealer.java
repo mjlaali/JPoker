@@ -17,7 +17,7 @@ public class Dealer {
     // todo: get cardDeck from a factory so that outsiders can test certain scenarios repeatedly
     public Dealer(GameSetting gameSetting, List<Notifiable> externalNotifiables) {
         this.gameSetting = gameSetting;
-        List<Notifiable> notifiables = new ArrayList<Notifiable>();
+        List<Notifiable> notifiables = new ArrayList<>();
         notifiables.addAll(gameSetting.getPlayers());
         notifiables.addAll(externalNotifiables);
         notifier = new Notifier(notifiables);
@@ -26,33 +26,38 @@ public class Dealer {
     public void runGame(int maxCount) throws OutOfCardsException {
         boolean tableOpen = true;
         int handCount = 0;
-        int smallBlindIndex = 0;
-        
+        int dealerIndex = 0;
+        int smallBlindIndex = 1;
+        int bigBlindIndex = 2 % gameSetting.getPlayers().size();
+
         while (tableOpen) {
-            HandSetting handSetting = new HandSetting(gameSetting, smallBlindIndex);
+            HandSetting handSetting = new HandSetting(gameSetting, smallBlindIndex, bigBlindIndex, dealerIndex);
             notifier.notifyNewHandStarted(handSetting);
             try {
+                BettingRound bettingRound = postBlinds(handSetting);
                 // PreFlop
                 handSetting.dealPreFlop();
-                doBettingRound(handSetting);
+                doBettingRound(handSetting, bettingRound);
                 // Flop
                 handSetting.dealFlop();
                 notifier.showFlopToEveryOne(handSetting.getBoard().cards[0], handSetting.getBoard().cards[1], handSetting.getBoard().cards[2]);
-                doBettingRound(handSetting);
+                doBettingRound(handSetting, new BettingRound(handSetting));
                 // Turn
                 handSetting.dealTurn();
                 notifier.showTurnToEveryOne(handSetting.getBoard().cards[3]);
-                doBettingRound(handSetting);
+                doBettingRound(handSetting, new BettingRound(handSetting));
                 // River
                 handSetting.dealRiver();
                 notifier.showRiverToEveryOne(handSetting.getBoard().cards[4]);
-                doBettingRound(handSetting);
+                doBettingRound(handSetting, new BettingRound(handSetting));
                 // Showdown
                 showDown(handSetting);
             } catch (EarlyFinishedHandException e) {
                 showDown(handSetting);
             }
-            smallBlindIndex = (smallBlindIndex + 1) % gameSetting.getPlayers().size();
+            dealerIndex = smallBlindIndex;
+            smallBlindIndex = bigBlindIndex;
+            bigBlindIndex = gameSetting.getActiveLeft(smallBlindIndex);
             handCount++;
             if (maxCount != -1 && handCount >= maxCount) {
                 tableOpen = false;
@@ -61,8 +66,22 @@ public class Dealer {
         notifier.notifyGameEnds();
     }
 
-    private void doBettingRound(HandSetting handSetting) throws EarlyFinishedHandException {
+    private BettingRound postBlinds(HandSetting handSetting) {
         BettingRound bettingRound = new BettingRound(handSetting);
+        if (gameSetting.getStackSize(handSetting.getSmallBlindPlayer()) > gameSetting.getSmallBlind()) {
+            BlindAction blindAction = bettingRound.blindBet(gameSetting.getSmallBlind());
+            gameSetting.deductStack(handSetting.getSmallBlindPlayer(), gameSetting.getSmallBlind());
+            notifier.announce(blindAction);
+        }
+        bettingRound.moveTurn();
+        BlindAction blindAction = bettingRound.blindBet(gameSetting.getBigBlind());
+        gameSetting.deductStack(handSetting.getBigBlindPlayer(), gameSetting.getBigBlind());
+        notifier.announce(blindAction);
+        bettingRound.moveTurn();
+        return bettingRound;
+    }
+
+    private void doBettingRound(HandSetting handSetting, BettingRound bettingRound) throws EarlyFinishedHandException {
         while (!bettingRound.finished()) {
             Action action = bettingRound.nextBet();
             if (action.isFold()) {
@@ -83,7 +102,7 @@ public class Dealer {
 
     public void showDown(HandSetting handSetting) {
         // Create a map of getStartingPlayers who decide to show their hands with the hand type they have
-        Map<Player, HandType> playerHandTypes = new HashMap<Player, HandType>();
+        Map<Player, HandType> playerHandTypes = new HashMap<>();
         Pot pot = handSetting.getPot();
         Iterator<Player> iterator = pot.playerIterator();
         while (iterator.hasNext()) {
@@ -119,12 +138,12 @@ public class Dealer {
     }
 
     private List<Player> chooseWinners(List<Player> playersInvolved, Map<Player, HandType> playerHandTypes) {
-        List<Player> winners = new ArrayList<Player>();
+        List<Player> winners = new ArrayList<>();
         HandType bestHandType = null;
         for (Player player : playersInvolved) {
             HandType handType = playerHandTypes.get(player);
             if (bestHandType == null || handType.compareTo(bestHandType) > 0) {
-                winners = new ArrayList<Player>();
+                winners = new ArrayList<>();
                 winners.add(player);
                 bestHandType = handType;
             } else if (handType.compareTo(bestHandType) == 0) {

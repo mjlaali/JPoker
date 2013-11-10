@@ -27,15 +27,15 @@ public class StaticSettingDecider implements SettingDecider {
 //        Analyzer analyzer = new Analyzer();
 //        externalNotifiables.add(new ConsoleUI(false, false, true, analyzer));
 //        externalNotifiables.add(analyzer);
-        NotificationManager manager = new NotificationManager(gui, gui, 100, 30000);
+//        NotificationManager manager = new NotificationManager(gui, gui, 100, 30000);
 //        manager.start();
-        externalNotifiables.add(manager);
-        GameSetting gameSetting = new GameSetting(5, 10);
+        externalNotifiables.add(gui);
+        GameSetting gameSetting = new GameSetting(500, 1000);
 
         List<PlayerObserver> playerObservers = new ArrayList<PlayerObserver>();
-        playerObservers.add(manager);
+        playerObservers.add(gui);
         for (int i = 0; i < 8; i++) {
-            gameSetting.addPlayerStack(new CheckingPlayer("Player " + ((i + 1) * 111)), 10000, playerObservers);
+            gameSetting.addPlayerStack(new CheckingPlayer("Player " + ((i + 1) * 111)), 12000, playerObservers);
         }
         return gameSetting;
     }

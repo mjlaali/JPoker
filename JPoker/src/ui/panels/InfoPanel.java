@@ -2,17 +2,13 @@ package ui.panels;
 
 import players.Player;
 import poker.GameInfo;
-import poker.GameSetting;
 
 import javax.swing.*;
 import java.awt.*;
 
 /**
- * Created with IntelliJ IDEA.
  * User: Admin
  * Date: 27/10/13
- * Time: 10:35 PM
- * To change this template use File | Settings | File Templates.
  */
 public class InfoPanel extends JPanel {
     public static int panelWidth = 55, panelHeight = 27;

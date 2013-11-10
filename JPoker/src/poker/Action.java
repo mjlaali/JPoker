@@ -12,13 +12,14 @@ public class Action {
     public static byte CHECK = 2;
     public static byte CALL = 3;
     public static byte RAISE = 4;
+    public static byte BLIND = 5;
 
-    private Player player;
-    private double bet;
-    private Action previousSelfAction;
-    private Action previousBoardRaise;
-    private byte type;
-    private boolean allInAction;
+    protected Player player;
+    protected double bet;
+    protected Action previousSelfAction;
+    protected Action previousBoardRaise;
+    protected byte type;
+    protected boolean allInAction;
 
     public Action(double bet, Action previousSelfAction, Action previousBoardRaise, Player player, Double stackSize) {
         this.player = player;
@@ -40,6 +41,9 @@ public class Action {
         } else {
             type = CALL;
         }
+    }
+
+    protected Action() {
     }
 
     public Player getPlayer() {
@@ -91,6 +95,10 @@ public class Action {
 
     public boolean isAllIn() {
         return allInAction;
+    }
+
+    public boolean isBlind() {
+        return type == BLIND;
     }
 
     /*
