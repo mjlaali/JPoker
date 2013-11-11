@@ -114,4 +114,14 @@ public class Action {
     public Action getPreviousBoardRaise() {
         return previousBoardRaise;
     }
+
+    @Override
+    public String toString() {
+        return  isBlind() ? "Blind" :
+                (isAllIn() ? "AllIn" :
+                (isReraise() ? "ReRaise" :
+                (isBet() ? "Bet" :
+                (isRaise() ? "Raise" :
+                (isCall() ? "Call" : "Check")))));
+    }
 }

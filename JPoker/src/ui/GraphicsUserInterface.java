@@ -2,10 +2,10 @@ package ui;
 
 import players.Player;
 import players.PlayerObserver;
-import poker.*;
 import poker.Action;
+import poker.*;
 import ui.panels.*;
-import ui.shapes.*;
+import ui.shapes.Position;
 import ui.shapes.Rectangle;
 
 import javax.swing.*;
@@ -22,6 +22,7 @@ public class GraphicsUserInterface extends JFrame implements UserInterface, Play
     private Map<Player, PlayerPanel> playerPanels = new HashMap<>();
     private ImagePanel boardPanel;
     private GameInfo currentGame;
+    private Map<Player, ActionPanel> actionPanels = new HashMap<>();
     private ActionPanel latestActionPanel;
     private HandInfo thisHand;
 
@@ -101,7 +102,7 @@ public class GraphicsUserInterface extends JFrame implements UserInterface, Play
     }
 
     public void flopIs(Card flopCard1, Card flopCard2, Card flopCard3) {
-        hideLatestAction(true);
+        hideActionPanels(true);
         ImagePanel flop1ImagePanel = new ImagePanel(constructPath(flopCard1));
         flop1ImagePanel.setBounds(UICoords.flop1X, UICoords.flop1Y, PlayerPanel.cardWidth, PlayerPanel.cardHeight);
         boardPanel.add(flop1ImagePanel);
@@ -120,7 +121,7 @@ public class GraphicsUserInterface extends JFrame implements UserInterface, Play
     }
 
     public void turnIs(Card card) {
-        hideLatestAction(true);
+        hideActionPanels(true);
         ImagePanel turnImagePanel = new ImagePanel(constructPath(card));
         turnImagePanel.setBounds(UICoords.turnX, UICoords.turnY, PlayerPanel.cardWidth, PlayerPanel.cardHeight);
         boardPanel.add(turnImagePanel);
@@ -129,7 +130,7 @@ public class GraphicsUserInterface extends JFrame implements UserInterface, Play
     }
 
     public void riverIs(Card card) {
-        hideLatestAction(true);
+        hideActionPanels(true);
         ImagePanel riverImagePanel = new ImagePanel(constructPath(card));
         riverImagePanel.setBounds(UICoords.riverX, UICoords.riverY, PlayerPanel.cardWidth, PlayerPanel.cardHeight);
         boardPanel.add(riverImagePanel);
@@ -139,8 +140,17 @@ public class GraphicsUserInterface extends JFrame implements UserInterface, Play
 
     @Override
     public void handle(Action action) {
-        hideLatestAction(false);
-        latestActionPanel = new BetActionPanel(action.getBet());
+        shadowLatestAction(false);
+        if (action.isRaise() || action.isAllIn() || action.isCall() || action.isBlind()) {
+            latestActionPanel = new BetActionPanel(action);
+        } else {
+            latestActionPanel = new MessageActionPanel(action);
+        }
+        ActionPanel prevActionPanel = actionPanels.get(action.getPlayer());
+        if (prevActionPanel != null) {
+            boardPanel.remove(prevActionPanel);
+        }
+        actionPanels.put(action.getPlayer(), latestActionPanel);
         boardPanel.add(latestActionPanel);
         Rectangle r = locateActionPanelBounds(action.getPlayer());
         latestActionPanel.setBounds(r.topLeft.x, r.topLeft.y, r.width, r.height);
@@ -167,12 +177,20 @@ public class GraphicsUserInterface extends JFrame implements UserInterface, Play
         return new Rectangle(p, ActionPanel.panelWidth, ActionPanel.panelHeight);
     }
 
-    private void hideLatestAction(boolean repaint) {
+    private void shadowLatestAction(boolean repaint) {
         if (latestActionPanel != null) {
-            boardPanel.remove(latestActionPanel);
+            latestActionPanel.setHighlighted(false);
             if (repaint)
                 repaint();
         }
+    }
+
+    private void hideActionPanels(boolean repaint) {
+        for (ActionPanel actionPanel: actionPanels.values()) {
+            boardPanel.remove(actionPanel);
+        }
+        if (repaint)
+            repaint();
     }
 
     public void gameEnds() {
@@ -190,9 +208,9 @@ public class GraphicsUserInterface extends JFrame implements UserInterface, Play
 
     @Override
     public void potWon(Iterable<Player> potWinners, double eachValue) {
-        hideLatestAction(true);
+        hideActionPanels(true);
         for (Player player : potWinners) {
-            ShowDownPanel showDownPanel = new ShowDownPanel(player, eachValue);
+            ShowDownPanel showDownPanel = new ShowDownPanel(eachValue);
             boardPanel.add(showDownPanel);
             Rectangle r = locateActionPanelBounds(player);
             showDownPanel.setBounds(r.topLeft.x, r.topLeft.y, r.width, r.height);

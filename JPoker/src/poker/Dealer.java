@@ -59,7 +59,7 @@ public class Dealer {
             smallBlindIndex = bigBlindIndex;
             bigBlindIndex = gameSetting.getActiveLeft(smallBlindIndex);
             handCount++;
-            if (maxCount != -1 && handCount >= maxCount) {
+            if (smallBlindIndex == bigBlindIndex || maxCount != -1 && handCount >= maxCount) {
                 tableOpen = false;
             }
         }

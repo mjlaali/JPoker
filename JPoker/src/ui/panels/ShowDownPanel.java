@@ -9,11 +9,9 @@ import java.awt.*;
  * Date: 05/11/13
  */
 public class ShowDownPanel extends ActionPanel {
-    private Player player;
     private double winAmount;
 
-    public ShowDownPanel(Player player, double winAmount) {
-        this.player = player;
+    public ShowDownPanel(double winAmount) {
         this.winAmount = winAmount;
     }
 

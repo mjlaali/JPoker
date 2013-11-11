@@ -4,14 +4,13 @@ import javax.swing.*;
 import java.awt.*;
 
 /**
- * Created with IntelliJ IDEA.
  * User: Admin
  * Date: 04/11/13
- * Time: 6:25 PM
- * To change this template use File | Settings | File Templates.
  */
 public abstract class ActionPanel extends JPanel {
     public static int panelWidth = 55, panelHeight = 30;
+
+    protected boolean highlighted = true;
 
     public void paint(Graphics g) {
         drawActionPanel(g);
@@ -19,6 +18,10 @@ public abstract class ActionPanel extends JPanel {
 
     public void update(Graphics g) {
         drawActionPanel(g);
+    }
+
+    public void setHighlighted(boolean highlighted) {
+        this.highlighted = highlighted;
     }
 
     protected abstract void drawActionPanel(Graphics g);
