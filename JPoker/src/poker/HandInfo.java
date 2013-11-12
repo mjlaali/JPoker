@@ -26,5 +26,7 @@ public interface HandInfo {
 
     public Player getBigBlindPlayer();
 
+    public List<Pot> getAllPots();
+
     public Player getDealer();
 }

@@ -5,11 +5,8 @@ import exceptions.HandTypeFoundException;
 import java.util.*;
 
 /**
- * Created by IntelliJ IDEA.
  * User: Sina
  * Date: Mar 1, 2012
- * Time: 1:49:18 PM
- * To change this template use File | Settings | File Templates.
  */
 public class HandTypeFinder {
     private Card[] fiveCardsByValue = new Card[5];
@@ -62,7 +59,7 @@ public class HandTypeFinder {
     private void tryTwoPair() throws HandTypeFoundException {
         int firstPairStartingIndex = getNOfAKindIndex(sortedSevenCards, 2);
         if (firstPairStartingIndex != -1) {
-            List<Card> otherCards = new ArrayList<Card>();
+            List<Card> otherCards = new ArrayList<>();
             for (int i = 0; i < firstPairStartingIndex; i++) {
                 otherCards.add(sortedSevenCards.get(i));
             }
@@ -74,7 +71,7 @@ public class HandTypeFinder {
                 fillFiveCardsFrom(sortedSevenCards, firstPairStartingIndex, 2, 0);
                 fillFiveCardsFrom(otherCards, secondPairStartingIndex, 2, 2);
                 if (firstPairStartingIndex == 0) {
-                    if (secondPairStartingIndex == 2) {
+                    if (secondPairStartingIndex == 0) {
                         fiveCardsByValue[4] = sortedSevenCards.get(4);
                     } else {
                         fiveCardsByValue[4] = sortedSevenCards.get(2);
@@ -129,7 +126,7 @@ public class HandTypeFinder {
     private void tryFullHouse() throws HandTypeFoundException {
         int tripsStartingIndex = getNOfAKindIndex(sortedSevenCards, 3);
         if (tripsStartingIndex != -1) {
-            List<Card> otherCards = new ArrayList<Card>();
+            List<Card> otherCards = new ArrayList<>();
             for (int i = 0; i < tripsStartingIndex; i++) {
                 otherCards.add(sortedSevenCards.get(i));
             }
@@ -170,7 +167,7 @@ public class HandTypeFinder {
     }
 
     private int fillFiveCardsIfStraight(List<Card> sortedCards) {
-        LinkedList<Card> tempSortedCards = new LinkedList<Card>(sortedCards);
+        LinkedList<Card> tempSortedCards = new LinkedList<>(sortedCards);
         if (tempSortedCards.get(0).rank() == Card.Rank.ACE) {
             tempSortedCards.addLast(tempSortedCards.get(0));
         }
@@ -224,11 +221,11 @@ public class HandTypeFinder {
     }
 
     private Map<Card.Suit, List<Card>> categorizeByColor(List<Card> sortedSevenCards) {
-        Map<Card.Suit, List<Card>> cardsForEachColor = new HashMap<Card.Suit, List<Card>>();
+        Map<Card.Suit, List<Card>> cardsForEachColor = new HashMap<>();
         for (Card card : sortedSevenCards) {
             List<Card> cards = cardsForEachColor.get(card.suit());
             if (cards == null) {
-                cards = new ArrayList<Card>();
+                cards = new ArrayList<>();
                 cardsForEachColor.put(card.suit(), cards);
             }
             cards.add(card);
@@ -237,7 +234,7 @@ public class HandTypeFinder {
     }
 
     private List<Card> sortByNumber(PreflopCards preflopCards, BoardCards board) {
-        List<Card> sevenCards = new ArrayList<Card>();
+        List<Card> sevenCards = new ArrayList<>();
         sevenCards.add(preflopCards.getCard1());
         sevenCards.add(preflopCards.getCard2());
         sevenCards.addAll(Arrays.asList(board.cards));
@@ -246,7 +243,7 @@ public class HandTypeFinder {
     }
 
     private List<Card> sortByNumber(List<Card> sevenCards) {
-        List<Card> sortedCards = new ArrayList<Card>();
+        List<Card> sortedCards = new ArrayList<>();
         for (Card card : sevenCards) {
             int index;
             for (index = 0; index < sortedCards.size(); index++) {

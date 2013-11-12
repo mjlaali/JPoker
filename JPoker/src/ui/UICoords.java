@@ -18,6 +18,7 @@ public class UICoords {
     static int flop3X = flop2X + PlayerPanel.cardWidth + flopDx, flop3Y = flop2Y;
     static int turnX = flop3X + PlayerPanel.cardWidth + flopDx, turnY = flop3Y;
     static int riverX = turnX + PlayerPanel.cardWidth + flopDx, riverY = turnY;
+    static int potX = riverX + PlayerPanel.cardWidth + 50, potY = turnY + 20;
 
     static {
         playerPositions[0] = new Position(12, 310);

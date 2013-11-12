@@ -34,10 +34,10 @@ public class GameSetting implements GameInfo {
     }
 
     @Override
-    public List<Player> getPlayersWithNonZeroStack() {
+    public List<Player> getActivePlayers() {
         List<Player> players = new ArrayList<>();
         for (Player player : getPlayers()) {
-            if (getStackSize(player) > 0) {
+            if (getStackSize(player) >= getBigBlind()) {
                 players.add(player);
             }
         }
@@ -72,7 +72,7 @@ public class GameSetting implements GameInfo {
         do {
             rightIndex = (rightIndex + size - 1) % size;
             playerToRight = players.get(rightIndex);
-        } while (getStackSize(playerToRight) == 0);
+        } while (getStackSize(playerToRight) < getBigBlind());
         return rightIndex;
     }
 
@@ -83,7 +83,7 @@ public class GameSetting implements GameInfo {
         do {
             leftIndex = (leftIndex + 1) % size;
             playerToLeft = players.get(leftIndex);
-        } while (getStackSize(playerToLeft) == 0);
+        } while (getStackSize(playerToLeft) < getBigBlind());
         return leftIndex;
     }
 

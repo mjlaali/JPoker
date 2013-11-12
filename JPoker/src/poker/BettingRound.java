@@ -89,7 +89,7 @@ public class BettingRound {
         // If there is any allin, create side pots
         double prevAllInAmount = 0;
         double allInAmount = getLowestAllInAmount(prevAllInAmount);
-        Pot pot = handSetting.getPot();
+        Pot pot = handSetting.getActivePot();
         while (allInAmount != -1) {
             Pot sidePot = new Pot();
             for (Action action : actions) {

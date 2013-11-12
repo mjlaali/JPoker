@@ -103,7 +103,7 @@ public class Dealer {
     public void showDown(HandSetting handSetting) {
         // Create a map of getStartingPlayers who decide to show their hands with the hand type they have
         Map<Player, HandType> playerHandTypes = new HashMap<>();
-        Pot pot = handSetting.getPot();
+        Pot pot = handSetting.getActivePot();
         Iterator<Player> iterator = pot.playerIterator();
         while (iterator.hasNext()) {
             Player player = iterator.next();
@@ -121,11 +121,10 @@ public class Dealer {
 
         // decide how each side is divided based on retrieved hand types
         List<Player> playersInvolved = pot.getPlayersInvolved();
-        for (Pot sidePot : pot.getSidePots()) {
+        for (Pot sidePot : pot.getAllPots()) {
             handlePot(playerHandTypes, playersInvolved, sidePot);
             playersInvolved.removeAll(sidePot.getAttachedPlayers());
         }
-        handlePot(playerHandTypes, playersInvolved, pot);
     }
 
     private void handlePot(Map<Player, HandType> playerHandTypes, List<Player> playersInvolved, Pot pot) {

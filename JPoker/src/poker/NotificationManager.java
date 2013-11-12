@@ -5,6 +5,7 @@ import players.PlayerObserver;
 
 import java.lang.reflect.Method;
 import java.util.LinkedList;
+import java.util.List;
 
 /**
  * User: Sina
@@ -95,7 +96,7 @@ public class NotificationManager extends Thread implements Notifiable, PlayerObs
     }
 
     @Override
-    public void potWon(Iterable<Player> potWinners, double eachValue) {
+    public void potWon(List<Player> potWinners, double eachValue) {
         Notification notification = new Notification("potWon", new Object[]{potWinners, eachValue});
         addNotification(notification);
     }

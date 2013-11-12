@@ -66,7 +66,7 @@ public class Analyzer implements Notifiable {
     }
 
     @Override
-    public void potWon(Iterable<Player> potWinners, double eachValue) {
+    public void potWon(List<Player> potWinners, double eachValue) {
     }
 
     private void computeStats() {

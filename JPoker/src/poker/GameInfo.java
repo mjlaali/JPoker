@@ -12,7 +12,7 @@ public interface GameInfo {
     public double getSmallBlind();
     public double getBigBlind();
     public List<Player> getPlayers();
-    public List<Player> getPlayersWithNonZeroStack();
+    public List<Player> getActivePlayers();
     public int getIndex(Player player);
     public Double getStackSize(Player player);
 }

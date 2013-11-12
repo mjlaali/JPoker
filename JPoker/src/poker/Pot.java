@@ -13,8 +13,8 @@ import java.util.List;
  */
 public class Pot {
     private double value = 0;
-    private List<Player> attachedPlayers = new ArrayList<Player>();
-    private LinkedList<Pot> sidePots = new LinkedList<Pot>();
+    private List<Player> attachedPlayers = new ArrayList<>();
+    private LinkedList<Pot> sidePots = new LinkedList<>();
 
     public void increase(double addition) {
         value += addition;
@@ -24,12 +24,8 @@ public class Pot {
         return value;
     }
 
-    public LinkedList<Pot> getSidePots() {
-        return sidePots;
-    }
-
     public void clearPlayers() {
-        attachedPlayers = new ArrayList<Player>();
+        attachedPlayers = new ArrayList<>();
     }
 
     public void attach(Player player) {
@@ -52,7 +48,7 @@ public class Pot {
     raiser is the first to show)
      */
     public List<Player> getPlayersInvolved() {
-        List<Player> playersInvolved = new ArrayList<Player>();
+        List<Player> playersInvolved = new ArrayList<>();
         for (Pot sidePot : sidePots) {
             playersInvolved.addAll(0, sidePot.attachedPlayers);
         }
@@ -63,5 +59,12 @@ public class Pot {
     public Iterator<Player> playerIterator() {
         List<Player> playersInvolved = getPlayersInvolved();
         return playersInvolved.iterator();
+    }
+
+    public List<Pot> getAllPots() {
+        List<Pot> allPots = new ArrayList<>(sidePots);
+        if (value > 0)
+            allPots.add(this);
+        return allPots;
     }
 }

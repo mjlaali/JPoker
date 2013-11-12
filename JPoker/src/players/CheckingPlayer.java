@@ -2,6 +2,8 @@ package players;
 
 import poker.*;
 
+import java.util.List;
+
 /**
  * User: Sina
  * Date: Feb 29, 2012
@@ -28,22 +30,27 @@ public class CheckingPlayer extends Player {
     }
 
     public void flopIs(Card flopCard1, Card flopCard2, Card flopCard3) {
-        latestBet = 2000;
-    }
-
-    public void turnIs(Card card) {
         latestBet = 0;
     }
 
+    public void turnIs(Card card) {
+        latestBet = 500;
+    }
+
     public void riverIs(Card card) {
-        latestBet = 3000;
+        latestBet = 2000;
     }
 
     public void handle(Action action) {
     }
 
     public double giveYourBet() {
-        return latestBet;
+        return latestBet();
+    }
+
+    private double latestBet() {
+        Double stackSize = handInfo.getGameInfo().getStackSize(this);
+        return stackSize > latestBet ? latestBet : stackSize;
     }
 
     @Override
@@ -64,6 +71,6 @@ public class CheckingPlayer extends Player {
     }
 
     @Override
-    public void potWon(Iterable<Player> potWinners, double eachValue) {
+    public void potWon(List<Player> potWinners, double eachValue) {
     }
 }

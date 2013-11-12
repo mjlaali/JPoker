@@ -22,7 +22,7 @@ public class HandSetting implements HandInfo {
     private List<Player> startingPlayers;
     //Shared card in the board
     private BoardCards boardCards;
-    private Pot pot;
+    private Pot activePot;
 
     public HandSetting(GameSetting gameSetting, int smallBlindIndex, int bigBlindIndex, int dealerIndex) {
         this.gameSetting = gameSetting;
@@ -30,7 +30,7 @@ public class HandSetting implements HandInfo {
         this.bigBlindIndex = bigBlindIndex;
         this.dealerIndex = dealerIndex;
         startingPlayers = getActivePlayers();
-        pot = new Pot();
+        activePot = new Pot();
     }
 
     public GameSetting getGameSetting() {
@@ -81,8 +81,12 @@ public class HandSetting implements HandInfo {
         boardCards.cards[4] = cardDeck.nextCard();
     }
 
-    public Pot getPot() {
-        return pot;
+    public Pot getActivePot() {
+        return activePot;
+    }
+
+    public List<Pot> getAllPots() {
+        return activePot.getAllPots();
     }
 
     public int getRemainingInPot() {
@@ -102,7 +106,7 @@ public class HandSetting implements HandInfo {
     public List<Player> getActivePlayers() {
         ArrayList<Player> players = new ArrayList<>();
         List<Player> allPlayers = gameSetting.getPlayers();
-        List<Player> activePlayers = gameSetting.getPlayersWithNonZeroStack();
+        List<Player> activePlayers = gameSetting.getActivePlayers();
         players.addAll(allPlayers.subList(smallBlindIndex, allPlayers.size()));
         if (smallBlindIndex > 0)
             players.addAll(allPlayers.subList(0, smallBlindIndex));

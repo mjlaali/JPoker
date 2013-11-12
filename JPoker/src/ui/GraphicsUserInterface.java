@@ -10,6 +10,7 @@ import ui.shapes.Rectangle;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,9 +23,11 @@ public class GraphicsUserInterface extends JFrame implements UserInterface, Play
     private Map<Player, PlayerPanel> playerPanels = new HashMap<>();
     private ImagePanel boardPanel;
     private GameInfo currentGame;
+    private HandInfo currentHand;
     private Map<Player, ActionPanel> actionPanels = new HashMap<>();
+    private List<PotPanel> potPanels = new ArrayList<>();
     private ActionPanel latestActionPanel;
-    private HandInfo thisHand;
+    private int nextPot = 0;
 
     public GraphicsUserInterface() throws HeadlessException {
         super("Poker AI");
@@ -42,7 +45,8 @@ public class GraphicsUserInterface extends JFrame implements UserInterface, Play
 
     public void newHand(HandInfo handInfo) {
         this.currentGame = handInfo.getGameInfo();
-        this.thisHand = handInfo;
+        this.currentHand = handInfo;
+        nextPot = 0;
         List<Player> players = currentGame.getPlayers();
         if (UICoords.playerPositions.length < players.size()) {
             throw new RuntimeException("At most " + UICoords.playerPositions.length + " getStartingPlayers are supported by this UI");
@@ -69,7 +73,7 @@ public class GraphicsUserInterface extends JFrame implements UserInterface, Play
 
     private void addDealerButton() {
         ImagePanel dealerButtonPanel = new ImagePanel("images/DealerButton.jpg");
-        Rectangle bounds = locateDealerButton(thisHand.getDealer());
+        Rectangle bounds = locateDealerButton(currentHand.getDealer());
         dealerButtonPanel.setBounds(bounds.topLeft.x, bounds.topLeft.y, bounds.width, bounds.height);
         boardPanel.add(dealerButtonPanel);
         dealerButtonPanel.repaint();
@@ -102,7 +106,7 @@ public class GraphicsUserInterface extends JFrame implements UserInterface, Play
     }
 
     public void flopIs(Card flopCard1, Card flopCard2, Card flopCard3) {
-        hideActionPanels(true);
+        buildPot(true);
         ImagePanel flop1ImagePanel = new ImagePanel(constructPath(flopCard1));
         flop1ImagePanel.setBounds(UICoords.flop1X, UICoords.flop1Y, PlayerPanel.cardWidth, PlayerPanel.cardHeight);
         boardPanel.add(flop1ImagePanel);
@@ -121,7 +125,7 @@ public class GraphicsUserInterface extends JFrame implements UserInterface, Play
     }
 
     public void turnIs(Card card) {
-        hideActionPanels(true);
+        buildPot(true);
         ImagePanel turnImagePanel = new ImagePanel(constructPath(card));
         turnImagePanel.setBounds(UICoords.turnX, UICoords.turnY, PlayerPanel.cardWidth, PlayerPanel.cardHeight);
         boardPanel.add(turnImagePanel);
@@ -130,7 +134,7 @@ public class GraphicsUserInterface extends JFrame implements UserInterface, Play
     }
 
     public void riverIs(Card card) {
-        hideActionPanels(true);
+        buildPot(true);
         ImagePanel riverImagePanel = new ImagePanel(constructPath(card));
         riverImagePanel.setBounds(UICoords.riverX, UICoords.riverY, PlayerPanel.cardWidth, PlayerPanel.cardHeight);
         boardPanel.add(riverImagePanel);
@@ -155,7 +159,7 @@ public class GraphicsUserInterface extends JFrame implements UserInterface, Play
         Rectangle r = locateActionPanelBounds(action.getPlayer());
         latestActionPanel.setBounds(r.topLeft.x, r.topLeft.y, r.width, r.height);
         repaint();
-        delay(400);
+        delay(500);
     }
 
     private Rectangle locateActionPanelBounds(Player player) {
@@ -185,9 +189,26 @@ public class GraphicsUserInterface extends JFrame implements UserInterface, Play
         }
     }
 
-    private void hideActionPanels(boolean repaint) {
+    private void buildPot(boolean repaint) {
         for (ActionPanel actionPanel: actionPanels.values()) {
             boardPanel.remove(actionPanel);
+        }
+        for (PotPanel potPanel : potPanels) {
+            boardPanel.remove(potPanel);
+        }
+        potPanels.clear();
+        boolean side = false;
+        List<Pot> allPots = currentHand.getAllPots();
+        double potCount = allPots.size();
+        double potIndex = 0;
+        for (Pot pot : allPots) {
+            PotPanel potPanel = new PotPanel(pot, side);
+            double potY = UICoords.potY - ((potCount - 1) / 2 - potIndex) * ActionPanel.panelHeight;
+            potPanel.setBounds(UICoords.potX, (int) potY, ActionPanel.panelWidth, ActionPanel.panelHeight);
+            boardPanel.add(potPanel);
+            potPanels.add(potPanel);
+            side = true;
+            potIndex++;
         }
         if (repaint)
             repaint();
@@ -207,17 +228,20 @@ public class GraphicsUserInterface extends JFrame implements UserInterface, Play
     }
 
     @Override
-    public void potWon(Iterable<Player> potWinners, double eachValue) {
-        hideActionPanels(true);
+    public void potWon(List<Player> potWinners, double eachValue) {
+        buildPot(true);
         for (Player player : potWinners) {
             ShowDownPanel showDownPanel = new ShowDownPanel(eachValue);
-            boardPanel.add(showDownPanel);
+            if (nextPot > 0)
+                potPanels.get(nextPot - 1).setHighlighted(false);
+            potPanels.get(nextPot++).setHighlighted(true);
+            boardPanel.add(showDownPanel, 0);
             Rectangle r = locateActionPanelBounds(player);
             showDownPanel.setBounds(r.topLeft.x, r.topLeft.y, r.width, r.height);
             repaint();
             delay(1000);
         }
-        delay(4500);
+        delay(3000);
     }
 
     public void firstCardIs(Player player, Card card) {

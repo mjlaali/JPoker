@@ -27,7 +27,7 @@ public class Action {
         this.previousBoardRaise = previousBoardRaise;
         this.previousSelfAction = previousSelfAction;
         double stack = (previousSelfAction == null) ? stackSize : previousSelfAction.getBet() + stackSize;
-        if (bet > stack || (previousBoardRaise != null && bet < previousBoardRaise.getBet())) {
+        if (bet > stack || (bet < stack) && (previousBoardRaise != null && bet < previousBoardRaise.getBet())) {
             throw new InvalidBetException(player, bet);
         }
         allInAction = (bet == stack);
