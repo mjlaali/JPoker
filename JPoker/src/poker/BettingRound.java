@@ -17,6 +17,7 @@ public class BettingRound {
 
     public BettingRound(HandSetting handSetting) {
         this.handSetting = handSetting;
+        handSetting.setBettingRound(this);
         turnIterator = new TurnIterator(handSetting);
     }
 
@@ -58,7 +59,7 @@ public class BettingRound {
         return blindAction;
     }
 
-    private Action findLastAction(Player player) {
+    public Action findLastAction(Player player) {
         for (Action action : actions) {
             if (action.getPlayer() == player) {
                 return action;

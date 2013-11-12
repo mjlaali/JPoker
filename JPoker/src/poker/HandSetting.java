@@ -22,6 +22,7 @@ public class HandSetting implements HandInfo {
     private List<Player> startingPlayers;
     //Shared card in the board
     private BoardCards boardCards;
+    private BettingRound currentBettingRound;
     private Pot activePot;
 
     public HandSetting(GameSetting gameSetting, int smallBlindIndex, int bigBlindIndex, int dealerIndex) {
@@ -97,6 +98,10 @@ public class HandSetting implements HandInfo {
         return playerPocketCards;
     }
 
+    public void setBettingRound(BettingRound bettingRound) {
+        this.currentBettingRound = bettingRound;
+    }
+
     @Override
     public GameInfo getGameInfo() {
         return gameSetting;
@@ -132,5 +137,16 @@ public class HandSetting implements HandInfo {
     @Override
     public Player getDealer() {
         return gameSetting.getPlayers().get(dealerIndex);
+    }
+
+    @Override
+    public Double getStackSize(Player player, boolean includeBetsInFront) {
+        if (includeBetsInFront && currentBettingRound != null) {
+            Action lastAction = currentBettingRound.findLastAction(player);
+            double lastBetAmount = lastAction == null ? 0d : lastAction.getBet();
+            return gameSetting.getStackSize(player) + lastBetAmount;
+        } else {
+            return gameSetting.getStackSize(player);
+        }
     }
 }

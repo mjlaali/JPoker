@@ -49,7 +49,7 @@ public class CheckingPlayer extends Player {
     }
 
     private double latestBet() {
-        Double stackSize = handInfo.getGameInfo().getStackSize(this);
+        Double stackSize = handInfo.getStackSize(this, true);
         return stackSize > latestBet ? latestBet : stackSize;
     }
 

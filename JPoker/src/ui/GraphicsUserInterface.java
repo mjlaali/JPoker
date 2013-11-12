@@ -10,6 +10,8 @@ import ui.shapes.Rectangle;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -19,7 +21,7 @@ import java.util.Map;
  * User: Sina
  * Date: Mar 4, 2012
  */
-public class GraphicsUserInterface extends JFrame implements UserInterface, PlayerObserver {
+public class GraphicsUserInterface extends JFrame implements UserInterface, PlayerObserver, KeyListener {
     private Map<Player, PlayerPanel> playerPanels = new HashMap<>();
     private ImagePanel boardPanel;
     private GameInfo currentGame;
@@ -27,7 +29,9 @@ public class GraphicsUserInterface extends JFrame implements UserInterface, Play
     private Map<Player, ActionPanel> actionPanels = new HashMap<>();
     private List<PotPanel> potPanels = new ArrayList<>();
     private ActionPanel latestActionPanel;
+    private TextPanel pausePanel;
     private int nextPot = 0;
+    private boolean pause = false;
 
     public GraphicsUserInterface() throws HeadlessException {
         super("Poker AI");
@@ -38,6 +42,7 @@ public class GraphicsUserInterface extends JFrame implements UserInterface, Play
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setSize(UICoords.boardWidth, UICoords.boardHeight);
         setResizable(false);
+        addKeyListener(this);
         boardPanel = new ImagePanel("images/Board.jpg");
         boardPanel.setLayout(null);
         getContentPane().add(boardPanel);
@@ -52,9 +57,13 @@ public class GraphicsUserInterface extends JFrame implements UserInterface, Play
             throw new RuntimeException("At most " + UICoords.playerPositions.length + " getStartingPlayers are supported by this UI");
         }
         boardPanel.removeAll();
+        pausePanel = new TextPanel("  ENTER > PAUSE", new Font("Comic Sans MS", Font.BOLD, 12), new Color(191, 186, 181));
+        pausePanel.setBounds(boardPanel.getWidth() - 135, boardPanel.getHeight() - 30, 135, 30);
+        boardPanel.add(pausePanel);
         addDealerButton();
         int i = 0;
         for (Player player : players) {
+            checkPause();
             InfoPanel infoPanel = new InfoPanel(player, currentGame);
             boardPanel.add(infoPanel);
             Position p = UICoords.playerPositions[i];
@@ -69,6 +78,7 @@ public class GraphicsUserInterface extends JFrame implements UserInterface, Play
             i++;
         }
         repaint();
+        checkPause();
     }
 
     private void addDealerButton() {
@@ -111,17 +121,17 @@ public class GraphicsUserInterface extends JFrame implements UserInterface, Play
         flop1ImagePanel.setBounds(UICoords.flop1X, UICoords.flop1Y, PlayerPanel.cardWidth, PlayerPanel.cardHeight);
         boardPanel.add(flop1ImagePanel);
         flop1ImagePanel.repaint();
-        delay(200);
+        delay(200, true);
         ImagePanel flop2ImagePanel = new ImagePanel(constructPath(flopCard2));
         flop2ImagePanel.setBounds(UICoords.flop2X, UICoords.flop2Y, PlayerPanel.cardWidth, PlayerPanel.cardHeight);
         boardPanel.add(flop2ImagePanel);
         flop2ImagePanel.repaint();
-        delay(100);
+        delay(100, true);
         ImagePanel flop3ImagePanel = new ImagePanel(constructPath(flopCard3));
         flop3ImagePanel.setBounds(UICoords.flop3X, UICoords.flop3Y, PlayerPanel.cardWidth, PlayerPanel.cardHeight);
         boardPanel.add(flop3ImagePanel);
         flop3ImagePanel.repaint();
-        delay(100);
+        delay(100, true);
     }
 
     public void turnIs(Card card) {
@@ -130,7 +140,7 @@ public class GraphicsUserInterface extends JFrame implements UserInterface, Play
         turnImagePanel.setBounds(UICoords.turnX, UICoords.turnY, PlayerPanel.cardWidth, PlayerPanel.cardHeight);
         boardPanel.add(turnImagePanel);
         turnImagePanel.repaint();
-        delay(200);
+        delay(200, true);
     }
 
     public void riverIs(Card card) {
@@ -139,7 +149,7 @@ public class GraphicsUserInterface extends JFrame implements UserInterface, Play
         riverImagePanel.setBounds(UICoords.riverX, UICoords.riverY, PlayerPanel.cardWidth, PlayerPanel.cardHeight);
         boardPanel.add(riverImagePanel);
         riverImagePanel.repaint();
-        delay(200);
+        delay(200, true);
     }
 
     @Override
@@ -159,7 +169,7 @@ public class GraphicsUserInterface extends JFrame implements UserInterface, Play
         Rectangle r = locateActionPanelBounds(action.getPlayer());
         latestActionPanel.setBounds(r.topLeft.x, r.topLeft.y, r.width, r.height);
         repaint();
-        delay(500);
+        delay(500, true);
     }
 
     private Rectangle locateActionPanelBounds(Player player) {
@@ -234,35 +244,68 @@ public class GraphicsUserInterface extends JFrame implements UserInterface, Play
             ShowDownPanel showDownPanel = new ShowDownPanel(eachValue);
             if (nextPot > 0)
                 potPanels.get(nextPot - 1).setHighlighted(false);
-            potPanels.get(nextPot++).setHighlighted(true);
+            potPanels.get(nextPot).setHighlighted(true);
             boardPanel.add(showDownPanel, 0);
             Rectangle r = locateActionPanelBounds(player);
             showDownPanel.setBounds(r.topLeft.x, r.topLeft.y, r.width, r.height);
             repaint();
-            delay(1000);
+            delay(800, true);
         }
-        delay(3000);
+        nextPot++;
+        delay(1200, true);
     }
 
     public void firstCardIs(Player player, Card card) {
         PlayerPanel playerPanel = playerPanels.get(player);
         playerPanel.setCard1(card);
         playerPanel.repaint();
-        delay(300);
+        delay(300, true);
     }
 
     public void secondCardIs(Player player, Card card) {
         PlayerPanel playerPanel = playerPanels.get(player);
         playerPanel.setCard2(card);
         playerPanel.repaint();
-        delay(300);
+        delay(300, true);
     }
 
-    private void delay(int millis) {
+    private void delay(int millis, boolean checkPause) {
         try {
             Thread.sleep(millis);
         } catch (InterruptedException e) {
             throw new RuntimeException(e.getMessage(), e);
         }
+        if (checkPause)
+            checkPause();
+    }
+
+    private void checkPause() {
+        while (pause) {
+            delay(400, false);
+        }
+    }
+
+    @Override
+    public void keyTyped(KeyEvent e) {
+    }
+
+    @Override
+    public void keyPressed(KeyEvent e) {
+        if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+            pause = !pause;
+            if (pause) {
+                pausePanel.setText("ENTER > UNPAUSE");
+                pausePanel.setTextColor(Color.RED);
+                boardPanel.repaint();
+            } else {
+                pausePanel.setText("  ENTER > PAUSE");
+                pausePanel.setTextColor(new Color(191, 186, 181));
+                boardPanel.repaint();
+            }
+        }
+    }
+
+    @Override
+    public void keyReleased(KeyEvent e) {
     }
 }
