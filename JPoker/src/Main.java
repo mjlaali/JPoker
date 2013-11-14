@@ -9,7 +9,6 @@ import processors.StaticSettingDecider;
  */
 public class Main {
     public static void main(String[] args) throws OutOfCardsException {
-        testHands();
         SettingDecider settingDecider = new StaticSettingDecider();
         Dealer dealer = new Dealer(settingDecider.getGameSetting(), settingDecider.getExternalNotifiables());
         dealer.runGame(8);
