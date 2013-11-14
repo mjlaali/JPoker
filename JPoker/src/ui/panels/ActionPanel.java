@@ -25,4 +25,8 @@ public abstract class ActionPanel extends JPanel {
     }
 
     protected abstract void drawActionPanel(Graphics g);
+
+    protected double dropExtraFloatingPoints(double amount) {
+        return ((double) ((int) (amount * 10d))) / 10d;
+    }
 }

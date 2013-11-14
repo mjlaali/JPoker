@@ -67,4 +67,19 @@ public class Pot {
             allPots.add(this);
         return allPots;
     }
+
+    public void close() {
+        Pot sidePot = new Pot();
+        sidePot.value = value;
+        sidePot.attachedPlayers = attachedPlayers;
+        if (sidePot.value > 0)
+            sidePots.add(sidePot);
+        else {
+            if (!sidePots.isEmpty()) {
+                sidePots.getLast().attachedPlayers.addAll(sidePot.attachedPlayers);
+            }
+        }
+        value = 0;
+        attachedPlayers = new ArrayList<>();
+    }
 }

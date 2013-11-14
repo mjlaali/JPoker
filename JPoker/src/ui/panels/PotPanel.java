@@ -27,7 +27,7 @@ public class PotPanel extends ActionPanel {
         Font font = new Font("Comic Sans MS", Font.PLAIN, 11);
         g.setFont(font);
         g.drawString(side ? "SidePot" : "Pot:", 4, getHeight() / 2 - 2);
-        String betText = "  " + pot.getValue();
+        String betText = "  " + dropExtraFloatingPoints(pot.getValue());
         g.drawString(betText, (getWidth() / 2) - (betText.length() / 2) * 6, getHeight() / 2 + 12);
     }
 }

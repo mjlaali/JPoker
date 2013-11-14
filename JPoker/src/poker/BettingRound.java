@@ -92,16 +92,16 @@ public class BettingRound {
         double allInAmount = getLowestAllInAmount(prevAllInAmount);
         Pot pot = handSetting.getActivePot();
         while (allInAmount != -1) {
-            Pot sidePot = new Pot();
+            pot.clearPlayers();
             for (Action action : actions) {
                 if (action.getBet() > prevAllInAmount) {
-                    sidePot.increase(Math.min(allInAmount, action.getBet()) - prevAllInAmount);
+                    pot.increase(Math.min(allInAmount, action.getBet()) - prevAllInAmount);
                 }
                 if (action.isAllIn() && action.getBet() == allInAmount) {
-                    sidePot.attach(action.getPlayer());
+                    pot.attach(action.getPlayer());
                 }
             }
-            pot.add(sidePot);
+            pot.close();
             prevAllInAmount = allInAmount;
             allInAmount = getLowestAllInAmount(prevAllInAmount);
         }

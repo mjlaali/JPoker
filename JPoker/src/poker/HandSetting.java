@@ -17,7 +17,7 @@ public class HandSetting implements HandInfo {
     private int bigBlindIndex;
     private int dealerIndex;
     //The deck of cards
-    private CardDeck cardDeck = new CardDeck();
+    private CardDeck cardDeck = CardDeckFactory.getCardDeckFactory().getCardDeck();
     private LinkedHashMap<Player, PreflopCards> playerPocketCards;
     private List<Player> startingPlayers;
     //Shared card in the board

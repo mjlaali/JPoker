@@ -104,6 +104,7 @@ public class Dealer {
         // Create a map of getStartingPlayers who decide to show their hands with the hand type they have
         Map<Player, HandType> playerHandTypes = new HashMap<>();
         Pot pot = handSetting.getActivePot();
+        pot.close();
         Iterator<Player> iterator = pot.playerIterator();
         while (iterator.hasNext()) {
             Player player = iterator.next();
